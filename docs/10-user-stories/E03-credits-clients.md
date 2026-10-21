@@ -13,7 +13,7 @@ aucun solde n'est calculé ([R-04](../20-specs-fonctionnelles/01-regles-metier.m
 
 **Priorité :** Doit · **Dépend de :** US-E02-01, US-E03-04
 
-**État :** Absente
+**État :** Implémentée · **Code :** [`CreditsController`](../../Controllers/CreditsController.cs)
 
 **Critères d'acceptation**
 
@@ -42,7 +42,7 @@ aucun solde n'est calculé ([R-04](../20-specs-fonctionnelles/01-regles-metier.m
 
 **Priorité :** Doit · **Dépend de :** US-E03-01
 
-**État :** Absente
+**État :** Implémentée · **Code :** [`CreditsController`](../../Controllers/CreditsController.cs)
 
 **Critères d'acceptation**
 
@@ -62,7 +62,7 @@ aucun solde n'est calculé ([R-04](../20-specs-fonctionnelles/01-regles-metier.m
 
 **Priorité :** Doit · **Dépend de :** US-E03-01
 
-**État :** Absente
+**État :** Implémentée · **Code :** [`CreditsController`](../../Controllers/CreditsController.cs)
 
 **Critères d'acceptation**
 
@@ -81,7 +81,7 @@ aucun solde n'est calculé ([R-04](../20-specs-fonctionnelles/01-regles-metier.m
 
 **Priorité :** Doit
 
-**État :** Absente
+**État :** Implémentée · **Code :** [`CustomersController`](../../Controllers/CustomersController.cs)
 
 **Critères d'acceptation**
 
@@ -106,7 +106,7 @@ aucun solde n'est calculé ([R-04](../20-specs-fonctionnelles/01-regles-metier.m
 
 **Priorité :** Devrait · **Dépend de :** US-E03-04
 
-**État :** Absente
+**État :** Implémentée · **Code :** [`CustomersController`](../../Controllers/CustomersController.cs)
 
 **Critères d'acceptation**
 

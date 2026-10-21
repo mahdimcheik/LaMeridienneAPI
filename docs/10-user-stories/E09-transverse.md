@@ -27,7 +27,7 @@
 
 **Priorité :** Doit
 
-**État :** Absente
+**État :** Implémentée · **Code :** [`ProblemDetailsSetup`](../../Infrastructure/ProblemDetailsSetup.cs)
 
 **Critères d'acceptation**
 
@@ -51,7 +51,7 @@
 
 **Priorité :** Devrait
 
-**État :** Absente
+**État :** Implémentée · **Code :** [`AuditInterceptor`](../../Data/AuditInterceptor.cs)
 
 **Critères d'acceptation**
 

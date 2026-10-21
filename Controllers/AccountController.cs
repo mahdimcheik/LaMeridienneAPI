@@ -1,22 +1,14 @@
-using System.ComponentModel.DataAnnotations;
 using System.Security.Claims;
 using LaMeridienneAPI.Auth;
+using LaMeridienneAPI.Dtos;
+using LaMeridienneAPI.Services;
 using Microsoft.AspNetCore.Mvc;
 
 namespace LaMeridienneAPI.Controllers;
 
-public sealed record ChangePasswordRequest
-{
-    [Required(ErrorMessage = "Saisissez votre mot de passe actuel.")]
-    public string CurrentPassword { get; init; } = "";
-
-    [Required(ErrorMessage = "Saisissez un nouveau mot de passe.")]
-    public string NewPassword { get; init; } = "";
-}
-
 [ApiController]
 [Route("api/account")]
-public sealed class AccountController(AuthService auth, ICurrentUser currentUser) : ControllerBase
+public sealed class AccountController(AuthService auth, LayoutService layouts, ICurrentUser currentUser) : ControllerBase
 {
     /// <summary>US-E08-03 : les autres sessions du compte sont révoquées, la session courante reste ouverte.</summary>
     [HttpPut("password")]
@@ -31,4 +23,12 @@ public sealed class AccountController(AuthService auth, ICurrentUser currentUser
             ModelState.AddModelError(field, message);
         return ValidationProblem();
     }
+
+    /// <summary>Ma disposition des cases (R-07), ou la disposition par défaut (<c>isDefault</c>).</summary>
+    [HttpGet("layout")]
+    public Task<LayoutDto> GetLayout(CancellationToken ct) => layouts.GetAsync(currentUser.UserId!.Value, ct);
+
+    [HttpPut("layout")]
+    public Task<LayoutDto> SaveLayout(LayoutDto layout, CancellationToken ct) =>
+        layouts.SaveAsync(currentUser.UserId!.Value, layout, ct);
 }

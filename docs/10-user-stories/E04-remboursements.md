@@ -14,7 +14,7 @@ même forme de saisie, liste séparée, aucun rapprochement.
 
 **Priorité :** Doit · **Dépend de :** US-E02-01, US-E03-04
 
-**État :** Absente
+**État :** Implémentée · **Code :** [`RefundsController`](../../Controllers/RefundsController.cs)
 
 **Critères d'acceptation**
 
@@ -36,7 +36,7 @@ même forme de saisie, liste séparée, aucun rapprochement.
 
 **Priorité :** Doit · **Dépend de :** US-E04-01
 
-**État :** Absente
+**État :** Implémentée · **Code :** [`RefundsController`](../../Controllers/RefundsController.cs)
 
 **Critères d'acceptation**
 
@@ -53,7 +53,7 @@ même forme de saisie, liste séparée, aucun rapprochement.
 
 **Priorité :** Doit · **Dépend de :** US-E04-01
 
-**État :** Absente
+**État :** Implémentée · **Code :** [`RefundsController`](../../Controllers/RefundsController.cs)
 
 **Critères d'acceptation**
 

@@ -20,7 +20,123 @@ namespace LaMeridienneAPI.Data.Migrations
                 .HasAnnotation("ProductVersion", "10.0.12")
                 .HasAnnotation("Relational:MaxIdentifierLength", 63);
 
+            NpgsqlModelBuilderExtensions.HasPostgresExtension(modelBuilder, "pg_trgm");
             NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
+
+            modelBuilder.Entity("LaMeridienneAPI.Models.CreditEntry", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .HasColumnType("uuid");
+
+                    b.Property<decimal>("Amount")
+                        .HasPrecision(10, 2)
+                        .HasColumnType("numeric(10,2)");
+
+                    b.Property<string>("Comment")
+                        .HasMaxLength(500)
+                        .HasColumnType("character varying(500)");
+
+                    b.Property<DateTimeOffset>("CreatedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<Guid?>("CreatedById")
+                        .HasColumnType("uuid");
+
+                    b.Property<Guid>("CustomerId")
+                        .HasColumnType("uuid");
+
+                    b.Property<DateTimeOffset?>("DeletedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<Guid>("SheetId")
+                        .HasColumnType("uuid");
+
+                    b.Property<DateTimeOffset?>("UpdatedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<Guid?>("UpdatedById")
+                        .HasColumnType("uuid");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("CustomerId");
+
+                    b.HasIndex("SheetId");
+
+                    b.ToTable("CreditEntries", t =>
+                        {
+                            t.HasCheckConstraint("CK_CreditEntry_Amount", "\"Amount\" > 0 AND \"Amount\" <= 10000");
+                        });
+                });
+
+            modelBuilder.Entity("LaMeridienneAPI.Models.Customer", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .HasColumnType("uuid");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("character varying(100)");
+
+                    b.Property<string>("NormalizedName")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("character varying(100)");
+
+                    b.Property<string>("Phone")
+                        .HasMaxLength(30)
+                        .HasColumnType("character varying(30)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("NormalizedName")
+                        .IsUnique();
+
+                    b.HasIndex(new[] { "NormalizedName" }, "IX_Customers_NormalizedName_Trgm");
+
+                    NpgsqlIndexBuilderExtensions.HasMethod(b.HasIndex(new[] { "NormalizedName" }, "IX_Customers_NormalizedName_Trgm"), "gin");
+                    NpgsqlIndexBuilderExtensions.HasOperators(b.HasIndex(new[] { "NormalizedName" }, "IX_Customers_NormalizedName_Trgm"), new[] { "gin_trgm_ops" });
+
+                    b.ToTable("Customers");
+                });
+
+            modelBuilder.Entity("LaMeridienneAPI.Models.DailySheet", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .HasColumnType("uuid");
+
+                    b.Property<DateTimeOffset>("CreatedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<Guid?>("CreatedById")
+                        .HasColumnType("uuid");
+
+                    b.Property<DateOnly>("Date")
+                        .HasColumnType("date");
+
+                    b.Property<string>("Notes")
+                        .IsRequired()
+                        .HasMaxLength(10000)
+                        .HasColumnType("character varying(10000)");
+
+                    b.Property<int>("NotesVersion")
+                        .IsConcurrencyToken()
+                        .HasColumnType("integer");
+
+                    b.Property<DateTimeOffset?>("UpdatedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<Guid?>("UpdatedById")
+                        .HasColumnType("uuid");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("Date")
+                        .IsUnique();
+
+                    b.ToTable("DailySheets");
+                });
 
             modelBuilder.Entity("LaMeridienneAPI.Models.RefreshToken", b =>
                 {
@@ -61,6 +177,71 @@ namespace LaMeridienneAPI.Data.Migrations
                     b.ToTable("RefreshTokens");
                 });
 
+            modelBuilder.Entity("LaMeridienneAPI.Models.RefundEntry", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .HasColumnType("uuid");
+
+                    b.Property<decimal>("Amount")
+                        .HasPrecision(10, 2)
+                        .HasColumnType("numeric(10,2)");
+
+                    b.Property<string>("Comment")
+                        .HasMaxLength(500)
+                        .HasColumnType("character varying(500)");
+
+                    b.Property<DateTimeOffset>("CreatedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<Guid?>("CreatedById")
+                        .HasColumnType("uuid");
+
+                    b.Property<Guid>("CustomerId")
+                        .HasColumnType("uuid");
+
+                    b.Property<DateTimeOffset?>("DeletedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<Guid>("SheetId")
+                        .HasColumnType("uuid");
+
+                    b.Property<DateTimeOffset?>("UpdatedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<Guid?>("UpdatedById")
+                        .HasColumnType("uuid");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("CustomerId");
+
+                    b.HasIndex("SheetId");
+
+                    b.ToTable("RefundEntries", t =>
+                        {
+                            t.HasCheckConstraint("CK_RefundEntry_Amount", "\"Amount\" > 0 AND \"Amount\" <= 10000");
+                        });
+                });
+
+            modelBuilder.Entity("LaMeridienneAPI.Models.SheetLayout", b =>
+                {
+                    b.Property<Guid>("UserId")
+                        .HasColumnType("uuid");
+
+                    b.Property<double>("BottomSplit")
+                        .HasColumnType("double precision");
+
+                    b.Property<double>("RowSplit")
+                        .HasColumnType("double precision");
+
+                    b.Property<double>("TopSplit")
+                        .HasColumnType("double precision");
+
+                    b.HasKey("UserId");
+
+                    b.ToTable("SheetLayouts");
+                });
+
             modelBuilder.Entity("LaMeridienneAPI.Models.User", b =>
                 {
                     b.Property<Guid>("Id")
@@ -95,6 +276,25 @@ namespace LaMeridienneAPI.Data.Migrations
                     b.ToTable("Users");
                 });
 
+            modelBuilder.Entity("LaMeridienneAPI.Models.CreditEntry", b =>
+                {
+                    b.HasOne("LaMeridienneAPI.Models.Customer", "Customer")
+                        .WithMany()
+                        .HasForeignKey("CustomerId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.HasOne("LaMeridienneAPI.Models.DailySheet", "Sheet")
+                        .WithMany()
+                        .HasForeignKey("SheetId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.Navigation("Customer");
+
+                    b.Navigation("Sheet");
+                });
+
             modelBuilder.Entity("LaMeridienneAPI.Models.RefreshToken", b =>
                 {
                     b.HasOne("LaMeridienneAPI.Models.User", "User")
@@ -104,6 +304,34 @@ namespace LaMeridienneAPI.Data.Migrations
                         .IsRequired();
 
                     b.Navigation("User");
+                });
+
+            modelBuilder.Entity("LaMeridienneAPI.Models.RefundEntry", b =>
+                {
+                    b.HasOne("LaMeridienneAPI.Models.Customer", "Customer")
+                        .WithMany()
+                        .HasForeignKey("CustomerId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.HasOne("LaMeridienneAPI.Models.DailySheet", "Sheet")
+                        .WithMany()
+                        .HasForeignKey("SheetId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.Navigation("Customer");
+
+                    b.Navigation("Sheet");
+                });
+
+            modelBuilder.Entity("LaMeridienneAPI.Models.SheetLayout", b =>
+                {
+                    b.HasOne("LaMeridienneAPI.Models.User", null)
+                        .WithOne()
+                        .HasForeignKey("LaMeridienneAPI.Models.SheetLayout", "UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
                 });
 #pragma warning restore 612, 618
         }

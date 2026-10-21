@@ -57,4 +57,13 @@ public static class AuthHttp
         };
         return client.SendAsync(request);
     }
+
+    /// <summary>Comme le client Angular : renouvelle la session par le cookie et remplace le jeton d'accès.</summary>
+    public static async Task RenewAsync(this HttpClient client)
+    {
+        var response = await client.PostAsync("/api/auth/refresh", null);
+        response.EnsureSuccessStatusCode();
+        var body = (await response.Content.ReadFromJsonAsync<AuthResponseDto>())!;
+        client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", body.AccessToken);
+    }
 }

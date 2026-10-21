@@ -1,6 +1,7 @@
 using LaMeridienneAPI.Auth;
 using LaMeridienneAPI.Data;
 using LaMeridienneAPI.Infrastructure;
+using LaMeridienneAPI.Services;
 using Microsoft.AspNetCore.Mvc.ModelBinding.Metadata;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
@@ -27,8 +28,13 @@ builder.Services.AddDbContext<AppDbContext>((sp, o) => o
 builder.Services.AddHealthChecks().AddDbContextCheck<AppDbContext>();
 builder.Services.AddFrenchProblemDetails();
 builder.Services.AddLaMeridienneAuth(builder.Configuration);
+builder.Services.AddScoped<SheetService>();
+builder.Services.AddScoped<CustomerService>();
+builder.Services.AddScoped<EntryService>();
+builder.Services.AddScoped<LayoutService>();
 builder.Services.AddControllers(o =>
-    o.ModelMetadataDetailsProviders.Add(new SystemTextJsonValidationMetadataProvider()));
+        o.ModelMetadataDetailsProviders.Add(new SystemTextJsonValidationMetadataProvider()))
+    .AddJsonOptions(o => o.JsonSerializerOptions.Converters.Add(new UtcDateTimeOffsetConverter()));
 builder.Services.AddOpenApi();
 
 var app = builder.Build();

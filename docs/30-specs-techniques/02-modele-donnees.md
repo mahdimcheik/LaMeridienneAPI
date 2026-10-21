@@ -1,6 +1,6 @@
 # Modèle de données
 
-> Statut : **Brouillon** — à confirmer à la première migration.
+> Statut : **Brouillon** — lots 1 et 2 migrés ; les entités des lots 3 et 4 restent à confirmer.
 
 ```mermaid
 erDiagram
@@ -24,10 +24,10 @@ sont posées par un intercepteur EF à partir de l'utilisateur courant
 |---|---|---|
 | `User` | `Id`, `UserName`, `DisplayName`, `PasswordHash`, `FailedLoginCount`, `LockedUntil` | `UserName` unique |
 | `RefreshToken` | `Id`, `UserId`, `TokenHash`, `CreatedAt`, `ExpiresAt`, `ConsumedAt`, `RevokedAt`, `ReplacedById` | `TokenHash` unique ; jamais le jeton en clair |
-| `SheetLayout` | `UserId`, `Sections` (`jsonb`) | une par utilisateur ; contenu validé ([R-07](../20-specs-fonctionnelles/01-regles-metier.md#r-07--disposition-des-cases)) |
-| `DailySheet` | `Id`, `Date` (`date`), `Notes`, `NotesVersion` | `Date` unique ; `Notes` ≤ 10 000 caractères ; `NotesVersion` jeton de concurrence |
-| `Customer` | `Id`, `Name`, `NormalizedName`, `Phone`, `MergedIntoId` | `NormalizedName` unique (sans casse ni accents, [R-08](../20-specs-fonctionnelles/01-regles-metier.md#r-08--référentiel-clients)) ; index trigramme pour la recherche |
-| `CreditEntry` | `Id`, `SheetId`, `CustomerId`, `Amount`, `Comment`, `DeletedAt` + audit | `Amount numeric(10,2)` > 0 |
+| `SheetLayout` | `UserId`, `TopSplit`, `BottomSplit`, `RowSplit` (`double precision`) | une par utilisateur ; chaque proportion entre 0,15 et 0,85 ([R-07](../20-specs-fonctionnelles/01-regles-metier.md#r-07--disposition-des-cases)) |
+| `DailySheet` | `Id`, `Date` (`date`), `Notes`, `NotesVersion` + audit | `Date` unique ; `Notes` ≤ 10 000 caractères ; `NotesVersion` jeton de concurrence |
+| `Customer` | `Id`, `Name`, `NormalizedName`, `Phone` (`MergedIntoId` au lot 3) | `NormalizedName` unique (sans casse ni accents, calculé par [`CustomerNames`](../../Services/CustomerNames.cs), [R-08](../20-specs-fonctionnelles/01-regles-metier.md#r-08--référentiel-clients)) ; index trigramme GIN (`pg_trgm`) pour la recherche |
+| `CreditEntry` | `Id`, `SheetId`, `CustomerId`, `Amount`, `Comment`, `DeletedAt` + audit | `Amount numeric(10,2)`, contrainte `0 < Amount ≤ 10000` ; `Comment` ≤ 500 |
 | `RefundEntry` | mêmes champs que `CreditEntry` | idem |
 | `Newspaper` | `Id`, `Name`, `IsActive`, `SortOrder` | nom unique sans casse ; jamais supprimé |
 | `NewspaperSale` | `SheetId`, `NewspaperId`, `Quantity` + audit | clé `(SheetId, NewspaperId)` ; `0 ≤ Quantity ≤ 999` |

@@ -14,7 +14,7 @@ remboursements, journaux vendus, notes générales.
 
 **Priorité :** Doit · **Dépend de :** US-E01-01
 
-**État :** Absente
+**État :** Implémentée · **Code :** [`SheetsController`](../../Controllers/SheetsController.cs)
 
 **Critères d'acceptation**
 
@@ -39,7 +39,7 @@ remboursements, journaux vendus, notes générales.
 
 **Priorité :** Doit · **Dépend de :** US-E02-01
 
-**État :** Absente
+**État :** Implémentée · **Code :** [`SheetsController`](../../Controllers/SheetsController.cs)
 
 **Critères d'acceptation**
 
@@ -66,7 +66,7 @@ remboursements, journaux vendus, notes générales.
 
 **Priorité :** Devrait · **Dépend de :** US-E02-01
 
-**État :** Absente
+**État :** Implémentée · **Code :** [`AccountController`](../../Controllers/AccountController.cs)
 
 **Critères d'acceptation**
 

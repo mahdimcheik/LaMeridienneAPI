@@ -2,7 +2,7 @@
 
 > Statut : **Brouillon** — la référence exécutable sera le document OpenAPI généré.
 
-Préfixe `/api`. JSON en `camelCase`. Toutes les routes exigent un jeton d'accès sauf mention
+Préfixe `/api`. JSON en `camelCase`, instants en UTC avec `Z`, dates de feuille `AAAA-MM-JJ`. Toutes les routes exigent un jeton d'accès sauf mention
 contraire. Erreurs au format `ProblemDetails` (`application/problem+json`), message `title`/
 `detail` en français, `errors` par champ pour une validation (`400`).
 
@@ -33,22 +33,44 @@ contraire. Erreurs au format `ProblemDetails` (`application/problem+json`), mess
 ## Formes principales
 
 ```jsonc
-// GET /api/sheets/2026-10-21
+// GET /api/sheets/2026-10-21 — date sans feuille : "exists": false, listes vides, version 0
+// GET /api/sheets/today — crée la feuille du jour si besoin (R-01)
 {
   "date": "2026-10-21",
   "exists": true,
   "notes": "Livraison Sud Ouest en retard",
   "notesVersion": 4,
-  "credits":  [{ "id": "…", "customer": { "id": "…", "name": "Dupont" }, "amount": 12.5, "comment": null,
-                 "createdBy": "Marie", "createdAt": "2026-10-21T07:12:00Z", "updatedBy": null, "updatedAt": null }],
+  "credits":  [{ "id": "…", "date": "2026-10-21", "customer": { "id": "…", "name": "Dupont" }, "amount": 12.5,
+                 "comment": null, "createdBy": "Marie", "createdAt": "2026-10-21T07:12:00Z",
+                 "updatedBy": null, "updatedAt": null }],
   "refunds":  [],
-  "newspapers": [{ "newspaperId": "…", "name": "Sud Ouest", "isActive": true, "quantity": 14 }]
+  "newspapers": [{ "newspaperId": "…", "name": "Sud Ouest", "isActive": true, "quantity": 14 }] // lot 3
 }
 ```
 
 ```jsonc
 // POST /api/sheets/2026-10-21/credits — client par id OU par nom (créé à la volée, R-08)
+// → 201 avec la ligne ; même corps pour PUT /api/credits/{id} (200) et pour les remboursements
 { "customerId": null, "customerName": "Dupont", "amount": 12.5, "comment": "pain + journal" }
+```
+
+```jsonc
+// PUT /api/sheets/2026-10-21/notes → 200 { "notes", "notesVersion" } ; crée la feuille si besoin
+{ "notes": "Livraison Sud Ouest en retard", "version": 3 }
+// version périmée → 409, avec l'état serveur pour que le front le présente (R-11)
+{ "title": "Conflit", "status": 409, "detail": "…", "notes": "texte serveur", "notesVersion": 4 }
+```
+
+```jsonc
+// GET /api/customers?search=dup&limit=10 → au plus 10, « contient », sans casse ni accents (≥ 2 caractères)
+[{ "id": "…", "name": "Dupont", "phone": null }]
+// GET /api/customers/{id}/credits → du plus récent au plus ancien, aucun total (R-04)
+{ "customer": { "id": "…", "name": "Dupont", "phone": null }, "credits": [ /* lignes, avec "date" */ ] }
+```
+
+```jsonc
+// GET /api/account/layout — "isDefault": true tant que rien n'est enregistré ; PUT : même forme
+{ "topSplit": 0.5, "bottomSplit": 0.5, "rowSplit": 0.5, "isDefault": true }
 ```
 
 ```jsonc

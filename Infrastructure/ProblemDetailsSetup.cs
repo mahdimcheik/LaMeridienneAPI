@@ -30,6 +30,7 @@ public static class ProblemDetailsSetup
             if (status == StatusCodes.Status400BadRequest && ctx.ProblemDetails is ValidationProblemDetails)
                 ctx.ProblemDetails.Detail ??= "Un ou plusieurs champs sont invalides.";
         });
+        services.AddExceptionHandler<ApiExceptionHandler>();
         services.AddExceptionHandler<UnhandledExceptionHandler>();
         services.Configure<ApiBehaviorOptions>(o =>
         {

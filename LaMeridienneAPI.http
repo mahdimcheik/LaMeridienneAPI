@@ -32,3 +32,37 @@ Content-Type: application/json
 POST {{LaMeridienneAPI_HostAddress}}/api/auth/logout
 
 ###
+
+GET {{LaMeridienneAPI_HostAddress}}/api/sheets/today
+Authorization: Bearer {{login.response.body.accessToken}}
+
+###
+
+POST {{LaMeridienneAPI_HostAddress}}/api/sheets/2026-10-21/credits
+Authorization: Bearer {{login.response.body.accessToken}}
+Content-Type: application/json
+
+{ "customerName": "Dupont", "amount": 12.5, "comment": "pain + journal" }
+
+###
+
+PUT {{LaMeridienneAPI_HostAddress}}/api/sheets/2026-10-21/notes
+Authorization: Bearer {{login.response.body.accessToken}}
+Content-Type: application/json
+
+{ "notes": "Livraison Sud Ouest en retard", "version": 0 }
+
+###
+
+GET {{LaMeridienneAPI_HostAddress}}/api/customers?search=dup
+Authorization: Bearer {{login.response.body.accessToken}}
+
+###
+
+PUT {{LaMeridienneAPI_HostAddress}}/api/account/layout
+Authorization: Bearer {{login.response.body.accessToken}}
+Content-Type: application/json
+
+{ "topSplit": 0.6, "bottomSplit": 0.5, "rowSplit": 0.55 }
+
+###

@@ -1,7 +1,7 @@
 # ADR-0004 — Une feuille par date calendaire
 
 **Statut :** Accepté
-**Application :** À faire
+**Application :** Appliquée
 **Date :** 2026-10-21
 
 ## Contexte

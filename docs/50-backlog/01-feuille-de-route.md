@@ -56,13 +56,14 @@ verrouillage, et un appel anonyme à toute autre route répond `401`.
 
 **Objectif :** remplacer la feuille papier pour les crédits, remboursements et notes.
 
-- [ ] Entités `DailySheet`, `Customer`, `CreditEntry`, `RefundEntry`, `SheetLayout` + migration
-      (index unique sur `Date`, `NormalizedName` ; extension `pg_trgm`, `unaccent`).
-- [ ] `SheetsController` : aujourd'hui, par date, notes avec version (`409` si périmée).
-- [ ] Création concurrente d'une feuille : reprise sur violation d'unicité.
-- [ ] `CustomersController` : recherche (≥ 2 caractères, 10 résultats), crédits d'un client.
-- [ ] `CreditsController`, `RefundsController` : créer (client par id ou nom), modifier, supprimer.
-- [ ] `AccountController` : lecture/écriture de la disposition validée.
+- [x] Entités `DailySheet`, `Customer`, `CreditEntry`, `RefundEntry`, `SheetLayout` + migration
+      (index unique sur `Date`, `NormalizedName` ; extension `pg_trgm` — la forme sans accents est
+      calculée en C#, `unaccent` n'est pas nécessaire).
+- [x] `SheetsController` : aujourd'hui, par date, notes avec version (`409` si périmée).
+- [x] Création concurrente d'une feuille : reprise sur violation d'unicité.
+- [x] `CustomersController` : recherche (≥ 2 caractères, 10 résultats), crédits d'un client.
+- [x] `CreditsController`, `RefundsController` : créer (client par id ou nom), modifier, supprimer.
+- [x] `AccountController` : lecture/écriture de la disposition validée.
 
 **Stories :** US-E02-01 à US-E02-03, E03, E04, US-E06-01, US-E09-02, US-E09-03.
 **Vérifiable quand :** une journée type ([parcours](../00-vision/04-parcours-utilisateurs.md))

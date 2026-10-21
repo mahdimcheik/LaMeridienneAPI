@@ -1,29 +1,12 @@
-using System.ComponentModel.DataAnnotations;
 using LaMeridienneAPI.Auth;
 using LaMeridienneAPI.Data;
-using LaMeridienneAPI.Models;
+using LaMeridienneAPI.Dtos;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.RateLimiting;
 using Microsoft.EntityFrameworkCore;
 
 namespace LaMeridienneAPI.Controllers;
-
-public sealed record LoginRequest
-{
-    [Required(ErrorMessage = "Saisissez votre identifiant.")]
-    public string UserName { get; init; } = "";
-
-    [Required(ErrorMessage = "Saisissez votre mot de passe.")]
-    public string Password { get; init; } = "";
-}
-
-public sealed record CurrentUserResponse(Guid Id, string UserName, string DisplayName)
-{
-    public static CurrentUserResponse From(User user) => new(user.Id, user.UserName, user.DisplayName);
-}
-
-public sealed record AuthResponse(string AccessToken, DateTimeOffset ExpiresAt, CurrentUserResponse User);
 
 /// <summary>Session (E01) : jeton d'accès dans le corps, jeton de renouvellement en cookie uniquement.</summary>
 [ApiController]
