@@ -30,10 +30,12 @@ Une API, une base. Aucun service tiers, aucune file de messages, aucun cache dis
 LaMeridienneAPI/
   Controllers/      un contrôleur par ressource, mince : validation d'entrée, appel service
   Services/         règles métier, une classe par domaine (SheetService, AppointmentService…)
-  Data/             AppDbContext, configurations EF, migrations, seed
+  Data/             AppDbContext, configurations EF, migrations, commande --migrate
   Models/           entités EF
   Dtos/             contrats d'entrée/sortie, jamais d'entité exposée
-  Auth/             émission et rotation des jetons, politique Admin
+  Auth/             émission et rotation des jetons, politique Admin, seed des comptes
+  deploy/           compose de production, sauvegarde et restauration
+  Dockerfile        image de l'API
 ```
 
 Un seul projet. Pas de dépôt générique (`Repository<T>`) ni de médiateur : les services

@@ -29,7 +29,7 @@ flowchart LR
 - [x] Intercepteur EF d'audit (`CreatedAt/By`, `UpdatedAt/By`) et filtre global `DeletedAt`.
 - [x] `GET /health`.
 - [x] Projet `tests/LaMeridienne.Tests` avec `WebApplicationFactory` + Testcontainers.
-- [ ] Ajouter `docs/check-docs.sh` à la CI (lot 5) ; le lancer à la main d'ici là.
+- [x] Ajouter `docs/check-docs.sh` à la CI (lot 5).
 
 **Vérifiable quand :** `dotnet test LaMeridienne.slnx` passe avec un test de santé qui touche la base.
 **ADR :** [ADR-0001](../40-decisions/ADR-0001-architecture-simple.md).
@@ -97,11 +97,17 @@ après suppression.
 
 ## Lot 5 — Mise en service
 
-- [ ] Dockerfile de l'API, compose de production (API + PostgreSQL + reverse proxy + client).
-- [ ] Commande `--migrate` ; migrations appliquées au déploiement.
-- [ ] Sauvegarde `pg_dump` quotidienne, testée par une restauration.
-- [ ] CI : build, tests, `./docs/check-docs.sh`.
-- [ ] Mettre à jour les lignes `État` de toutes les stories et `Application` des ADR.
+- [x] Dockerfile de l'API, compose de production (API + PostgreSQL + sauvegarde) derrière
+      Nginx Proxy Manager, déjà présent sur le VPS ([exploitation](../30-specs-techniques/05-exploitation.md#production)).
+- [ ] Ajouter le conteneur du client au compose de production (lot 5 du front).
+- [x] Commande `--migrate` ; migrations appliquées au déploiement (service `migrate`).
+- [x] Sauvegarde `pg_dump` quotidienne, testée par une restauration (répétition locale :
+      `deploy/check-restore.sh` puis `deploy/restore.sh`).
+- [x] CI : build, tests, `./docs/check-docs.sh`, image Docker.
+- [x] `ForwardedHeaders` derrière le proxy (D-05).
+- [x] Mettre à jour les lignes `État` de toutes les stories et `Application` des ADR.
+- [ ] Déployer sur le VPS, déclarer l'hôte dans NPM, planifier la copie hors machine de
+      `deploy/backups`, lancer `deploy/check-restore.sh` après la première sauvegarde nocturne.
 
 **Vérifiable quand :** l'application tourne sur le serveur cible, une restauration de
 sauvegarde a été faite au moins une fois.

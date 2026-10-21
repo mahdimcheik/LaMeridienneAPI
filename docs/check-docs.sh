@@ -1,6 +1,7 @@
 #!/usr/bin/env bash
 # Contrôles de cohérence de la documentation.
 # Usage : ./docs/check-docs.sh
+# En CI, PUPPETEER_CONFIG désigne un fichier de configuration Puppeteer (ex. --no-sandbox).
 
 set -uo pipefail
 cd "$(dirname "$0")/.." || exit 1
@@ -57,7 +58,7 @@ if command -v npx >/dev/null 2>&1; then
     sed -i '/^\f$/d' "$m"
     [ -s "$m" ] || continue          # chunk vide produit par csplit
     i=$((i+1))
-    npx -y @mermaid-js/mermaid-cli@11 -i "$m" -o "$m.svg" >/dev/null 2>&1 || ko "diagramme invalide dans $m"
+    npx -y @mermaid-js/mermaid-cli@11 ${PUPPETEER_CONFIG:+-p "$PUPPETEER_CONFIG"} -i "$m" -o "$m.svg" >/dev/null 2>&1 || ko "diagramme invalide dans $m"
   done
   ok "$i diagrammes vérifiés"; rm -rf "$tmp"
 else

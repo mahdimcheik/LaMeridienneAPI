@@ -38,7 +38,12 @@ commités. L'API refuse de démarrer si l'un manque.
 
 ## Autres mesures
 
-- HTTPS obligatoire hors développement (`UseHttpsRedirection`, HSTS).
+- HTTPS obligatoire hors développement : TLS terminé par le reverse proxy, HSTS posé par
+  l'API (`UseHsts`) hors développement.
+- Derrière le proxy, `ASPNETCORE_FORWARDEDHEADERS_ENABLED=true` : l'adresse du client et le
+  schéma viennent de `X-Forwarded-For` / `X-Forwarded-Proto`. Ces en-têtes sont crus de toute
+  source, donc l'API ne doit être joignable que par le proxy (aucun port publié,
+  [exploitation](05-exploitation.md#production)).
 - Limitation de débit sur `/api/auth/login` et `/api/auth/refresh` (`AddRateLimiter`,
   10 requêtes/minute/IP, `429` avec `Retry-After`).
 - Aucun HTML n'est stocké ni rendu ; les textes libres sont rendus en texte par le front.

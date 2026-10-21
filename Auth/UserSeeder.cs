@@ -30,7 +30,7 @@ public sealed class UserSeeder(
         catch (PostgresException e) when (e.SqlState == PostgresErrorCodes.UndefinedTable)
         {
             throw new InvalidOperationException(
-                "La base n'est pas migrée (table Users absente). Lancez : dotnet ef database update --project LaMeridienneAPI.csproj", e);
+                "La base n'est pas migrée (table Users absente). Lancez : dotnet LaMeridienneAPI.dll --migrate (ou dotnet ef database update --project LaMeridienneAPI.csproj)", e);
         }
 
         var section = configuration.GetSection("Seed:Users");

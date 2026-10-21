@@ -1,0 +1,10 @@
+**/bin/
+**/obj/
+tests/
+docs/
+deploy/
+.git/
+.github/
+.remember/
+.env
+*.md

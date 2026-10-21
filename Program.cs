@@ -41,12 +41,23 @@ builder.Services.AddOpenApi();
 
 var app = builder.Build();
 
+// Avant tout démarrage : ni comptes à créer, ni options Jwt/Seed à valider.
+if (args.Contains(Migrator.Argument))
+{
+    await Migrator.RunAsync(app.Services);
+    return;
+}
+
 app.UseExceptionHandler();
 app.UseStatusCodePages();
 
 if (app.Environment.IsDevelopment())
 {
     app.MapOpenApi();
+}
+else
+{
+    app.UseHsts();
 }
 
 app.UseHttpsRedirection();

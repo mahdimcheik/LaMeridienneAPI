@@ -1,0 +1,91 @@
+# Production : API + PostgreSQL + sauvegarde. Nginx Proxy Manager (hors de ce fichier) termine
+# TLS et joint l'API par le réseau externe ${PROXY_NETWORK}. Aucun port n'est publié.
+# Usage (depuis la racine du dépôt) : docker compose -f deploy/compose.prod.yaml up -d --build
+name: lameridienne
+
+x-api: &api
+  build: ..
+  image: lameridienne-api:latest
+  environment:
+    ASPNETCORE_ENVIRONMENT: Production
+    ConnectionStrings__Default: "Host=postgres;Database=lameridienne;Username=lameridienne;Password=${POSTGRES_PASSWORD:?};Gss Encryption Mode=Disable"
+  networks: [internal]
+
+services:
+  postgres:
+    image: postgres:17
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: lameridienne
+      POSTGRES_USER: lameridienne
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?POSTGRES_PASSWORD manque dans deploy/.env}
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    networks: [internal]
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U lameridienne -d lameridienne"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+
+  migrate:
+    <<: *api
+    command: ["--migrate"]
+    restart: "no"
+    depends_on:
+      postgres:
+        condition: service_healthy
+
+  api:
+    <<: *api
+    container_name: lameridienne-api
+    restart: unless-stopped
+    environment:
+      ASPNETCORE_ENVIRONMENT: Production
+      ASPNETCORE_FORWARDEDHEADERS_ENABLED: "true"
+      ConnectionStrings__Default: "Host=postgres;Database=lameridienne;Username=lameridienne;Password=${POSTGRES_PASSWORD:?};Gss Encryption Mode=Disable"
+      Jwt__Key: ${JWT_KEY:?JWT_KEY manque dans deploy/.env}
+      Jwt__Issuer: LaMeridienneAPI
+      Jwt__Audience: LaMeridienneClient
+      Seed__Users__0__UserName: ${SEED_USER_0_NAME:-}
+      Seed__Users__0__DisplayName: ${SEED_USER_0_DISPLAY:-}
+      Seed__Users__0__Password: ${SEED_USER_0_PASSWORD:-}
+      Seed__Users__1__UserName: ${SEED_USER_1_NAME:-}
+      Seed__Users__1__DisplayName: ${SEED_USER_1_DISPLAY:-}
+      Seed__Users__1__Password: ${SEED_USER_1_PASSWORD:-}
+      Seed__Users__2__UserName: ${SEED_USER_2_NAME:-}
+      Seed__Users__2__DisplayName: ${SEED_USER_2_DISPLAY:-}
+      Seed__Users__2__Password: ${SEED_USER_2_PASSWORD:-}
+    networks: [internal, proxy]
+    depends_on:
+      migrate:
+        condition: service_completed_successfully
+
+  backup:
+    image: postgres:17
+    restart: unless-stopped
+    entrypoint: ["bash", "/backup.sh"]
+    environment:
+      TZ: Europe/Paris
+      BACKUP_TIME: ${BACKUP_TIME:-03:00}
+      BACKUP_RETENTION_DAYS: ${BACKUP_RETENTION_DAYS:-30}
+      PGHOST: postgres
+      PGDATABASE: lameridienne
+      PGUSER: lameridienne
+      PGPASSWORD: ${POSTGRES_PASSWORD:?}
+    volumes:
+      - ./backup.sh:/backup.sh:ro
+      - ./backups:/backups
+    networks: [internal]
+    depends_on:
+      postgres:
+        condition: service_healthy
+
+volumes:
+  pgdata:
+
+networks:
+  internal:
+  proxy:
+    name: ${PROXY_NETWORK:-global-network}
+    external: true

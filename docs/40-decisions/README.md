@@ -32,7 +32,7 @@ Ce que ça coûte, ce que ça interdit, ce qu'il faudra surveiller.
 
 | ADR | Titre | Statut | Application |
 |---|---|---|---|
-| [ADR-0001](ADR-0001-architecture-simple.md) | Architecture simple : un projet, contrôleurs, EF Core, PostgreSQL | Accepté | Partielle |
+| [ADR-0001](ADR-0001-architecture-simple.md) | Architecture simple : un projet, contrôleurs, EF Core, PostgreSQL | Accepté | Appliquée |
 | [ADR-0002](ADR-0002-jwt-et-refresh-token.md) | Jeton d'accès JWT et jeton de renouvellement rotatif en cookie | Accepté | Appliquée |
 | [ADR-0003](ADR-0003-comptes-pre-crees.md) | Trois comptes pré-créés, sans inscription | Accepté | Appliquée |
 | [ADR-0004](ADR-0004-feuille-par-jour.md) | Une feuille par date calendaire | Accepté | Appliquée |
