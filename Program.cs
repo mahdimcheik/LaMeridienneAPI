@@ -32,6 +32,7 @@ builder.Services.AddScoped<SheetService>();
 builder.Services.AddScoped<CustomerService>();
 builder.Services.AddScoped<EntryService>();
 builder.Services.AddScoped<LayoutService>();
+builder.Services.AddScoped<NewspaperService>();
 builder.Services.AddControllers(o =>
         o.ModelMetadataDetailsProviders.Add(new SystemTextJsonValidationMetadataProvider()))
     .AddJsonOptions(o => o.JsonSerializerOptions.Converters.Add(new UtcDateTimeOffsetConverter()));

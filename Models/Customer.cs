@@ -12,4 +12,7 @@ public class Customer
     public string NormalizedName { get; set; } = "";
 
     public string? Phone { get; set; }
+
+    /// <summary>Fiche dans laquelle celle-ci a été fusionnée (US-E08-02) ; elle n'est alors plus proposée.</summary>
+    public Guid? MergedIntoId { get; set; }
 }

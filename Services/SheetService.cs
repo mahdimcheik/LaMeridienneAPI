@@ -8,7 +8,7 @@ using Npgsql;
 
 namespace LaMeridienneAPI.Services;
 
-/// <summary>Feuilles par date (R-01, ADR-0004) et notes versionnées (R-11).</summary>
+/// <summary>Feuilles par date (R-01, ADR-0004), notes versionnées (R-11) et case Journaux (R-10).</summary>
 public sealed class SheetService(AppDbContext db, ShopClock clock)
 {
     /// <summary>Date d'une route, au format <c>AAAA-MM-JJ</c> ; sinon <c>400</c>.</summary>
@@ -47,14 +47,32 @@ public sealed class SheetService(AppDbContext db, ShopClock clock)
     {
         var sheet = await db.DailySheets.AsNoTracking().SingleOrDefaultAsync(s => s.Date == date, ct);
         if (sheet is null)
-            return new SheetResponse(date, false, "", 0, [], []);
+            return new SheetResponse(date, false, "", 0, [], [], await NewspapersAsync(null, ct));
 
         var credits = await db.CreditEntries.Where(e => e.SheetId == sheet.Id)
             .OrderBy(e => e.CreatedAt).ToResponses(db).ToListAsync(ct);
         var refunds = await db.RefundEntries.Where(e => e.SheetId == sheet.Id)
             .OrderBy(e => e.CreatedAt).ToResponses(db).ToListAsync(ct);
-        return new SheetResponse(date, true, sheet.Notes, sheet.NotesVersion, credits, refunds);
+        var newspapers = await NewspapersAsync(sheet.Id, ct);
+        return new SheetResponse(date, true, sheet.Notes, sheet.NotesVersion, credits, refunds, newspapers);
     }
+
+    /// <summary>
+    /// La case Journaux d'une feuille : les journaux actifs, et les désactivés qui y ont une vente (R-10).
+    /// Sans feuille, les journaux actifs à 0.
+    /// </summary>
+    private Task<List<NewspaperSaleResponse>> NewspapersAsync(Guid? sheetId, CancellationToken ct) =>
+        db.Newspapers.AsNoTracking()
+            .Select(n => new
+            {
+                Paper = n,
+                Quantity = db.NewspaperSales.Where(s => s.SheetId == sheetId && s.NewspaperId == n.Id)
+                    .Select(s => (int?)s.Quantity).FirstOrDefault() ?? 0,
+            })
+            .Where(x => x.Paper.IsActive || x.Quantity > 0)
+            .OrderBy(x => x.Paper.SortOrder)
+            .Select(x => new NewspaperSaleResponse(x.Paper.Id, x.Paper.Name, x.Paper.IsActive, x.Quantity))
+            .ToListAsync(ct);
 
     /// <summary>Enregistre les notes si <paramref name="version"/> est la version courante ; sinon <c>409</c>.</summary>
     public async Task<NotesResponse> SaveNotesAsync(DateOnly date, string notes, int version, CancellationToken ct)

@@ -25,6 +25,19 @@ public static class SheetHttp
         return (await response.Content.ReadFromJsonAsync<EntryResponse>())!;
     }
 
+    public static Task<HttpResponseMessage> IncrementAsync(this HttpClient client, string date, Guid newspaperId, int delta) =>
+        client.PostAsJsonAsync($"/api/sheets/{date}/newspapers/{newspaperId}/increment", new { delta });
+
+    public static Task<HttpResponseMessage> SetQuantityAsync(this HttpClient client, string date, Guid newspaperId, object quantity) =>
+        client.PutAsJsonAsync($"/api/sheets/{date}/newspapers/{newspaperId}", new { quantity });
+
+    public static async Task<NewspaperResponse> AddNewspaperAsync(this HttpClient client, string name)
+    {
+        var response = await client.PostAsJsonAsync("/api/newspapers", new { name });
+        Assert.Equal(HttpStatusCode.Created, response.StatusCode);
+        return (await response.Content.ReadFromJsonAsync<NewspaperResponse>())!;
+    }
+
     public static async Task<ValidationProblemDetails> ValidationProblemAsync(this HttpResponseMessage response)
     {
         Assert.Equal(HttpStatusCode.BadRequest, response.StatusCode);

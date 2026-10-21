@@ -66,3 +66,37 @@ Content-Type: application/json
 { "topSplit": 0.6, "bottomSplit": 0.5, "rowSplit": 0.55 }
 
 ###
+
+GET {{LaMeridienneAPI_HostAddress}}/api/newspapers
+Authorization: Bearer {{login.response.body.accessToken}}
+
+###
+
+POST {{LaMeridienneAPI_HostAddress}}/api/sheets/2026-10-21/newspapers/01920000-0000-7000-8000-000000000001/increment
+Authorization: Bearer {{login.response.body.accessToken}}
+Content-Type: application/json
+
+{ "delta": 1 }
+
+###
+
+PUT {{LaMeridienneAPI_HostAddress}}/api/sheets/2026-10-21/newspapers/01920000-0000-7000-8000-000000000001
+Authorization: Bearer {{login.response.body.accessToken}}
+Content-Type: application/json
+
+{ "quantity": 14 }
+
+###
+
+POST {{LaMeridienneAPI_HostAddress}}/api/newspapers
+Authorization: Bearer {{login.response.body.accessToken}}
+Content-Type: application/json
+
+{ "name": "L'Équipe" }
+
+###
+
+GET {{LaMeridienneAPI_HostAddress}}/api/customers/list?page=1&pageSize=50
+Authorization: Bearer {{login.response.body.accessToken}}
+
+###

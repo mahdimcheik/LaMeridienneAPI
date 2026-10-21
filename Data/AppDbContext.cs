@@ -13,6 +13,8 @@ public class AppDbContext(DbContextOptions options) : DbContext(options)
     public DbSet<CreditEntry> CreditEntries => Set<CreditEntry>();
     public DbSet<RefundEntry> RefundEntries => Set<RefundEntry>();
     public DbSet<SheetLayout> SheetLayouts => Set<SheetLayout>();
+    public DbSet<Newspaper> Newspapers => Set<Newspaper>();
+    public DbSet<NewspaperSale> NewspaperSales => Set<NewspaperSale>();
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {

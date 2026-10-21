@@ -23,7 +23,8 @@ public sealed class CustomerConfiguration : IEntityTypeConfiguration<Customer>
         b.Property(c => c.Name).HasMaxLength(Customer.NameMaxLength);
         b.Property(c => c.NormalizedName).HasMaxLength(Customer.NameMaxLength);
         b.Property(c => c.Phone).HasMaxLength(30);
-        b.HasIndex(c => c.NormalizedName).IsUnique();
+        b.HasIndex(c => c.NormalizedName).IsUnique().HasFilter("\"MergedIntoId\" IS NULL");
+        b.HasOne<Customer>().WithMany().HasForeignKey(c => c.MergedIntoId).OnDelete(DeleteBehavior.Restrict);
         b.HasIndex(c => c.NormalizedName, "IX_Customers_NormalizedName_Trgm")
             .HasMethod("gin")
             .HasOperators("gin_trgm_ops");

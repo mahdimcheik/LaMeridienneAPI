@@ -13,7 +13,7 @@ d'invendus ([Q5](../50-backlog/02-questions-ouvertes.md#q5--prix-des-journaux)).
 
 **Priorité :** Doit · **Dépend de :** US-E02-01
 
-**État :** Absente
+**État :** Implémentée · **Code :** [`NewspaperSalesController`](../../Controllers/NewspaperSalesController.cs)
 
 **Critères d'acceptation**
 
@@ -23,6 +23,7 @@ d'invendus ([Q5](../50-backlog/02-questions-ouvertes.md#q5--prix-des-journaux)).
 - Étant donné une quantité négative, décimale ou au-delà de 999
   Quand je l'enregistre
   Alors elle est refusée et la valeur précédente est rétablie.
+  Un `+1` à 999 est ignoré, comme un `−1` à 0.
 
 - Étant donné deux postes qui font `+1` en même temps sur le même journal
   Quand les deux demandes arrivent
@@ -38,7 +39,7 @@ d'invendus ([Q5](../50-backlog/02-questions-ouvertes.md#q5--prix-des-journaux)).
 
 **Priorité :** Doit · **Dépend de :** US-E05-01, US-E02-02
 
-**État :** Absente
+**État :** Implémentée · **Code :** [`SheetService`](../../Services/SheetService.cs)
 
 **Critères d'acceptation**
 

@@ -74,6 +74,9 @@ namespace LaMeridienneAPI.Data.Migrations
                     b.Property<Guid>("Id")
                         .HasColumnType("uuid");
 
+                    b.Property<Guid?>("MergedIntoId")
+                        .HasColumnType("uuid");
+
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasMaxLength(100)
@@ -90,8 +93,11 @@ namespace LaMeridienneAPI.Data.Migrations
 
                     b.HasKey("Id");
 
+                    b.HasIndex("MergedIntoId");
+
                     b.HasIndex("NormalizedName")
-                        .IsUnique();
+                        .IsUnique()
+                        .HasFilter("\"MergedIntoId\" IS NULL");
 
                     b.HasIndex(new[] { "NormalizedName" }, "IX_Customers_NormalizedName_Trgm");
 
@@ -136,6 +142,86 @@ namespace LaMeridienneAPI.Data.Migrations
                         .IsUnique();
 
                     b.ToTable("DailySheets");
+                });
+
+            modelBuilder.Entity("LaMeridienneAPI.Models.Newspaper", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .HasColumnType("uuid");
+
+                    b.Property<bool>("IsActive")
+                        .HasColumnType("boolean");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("character varying(100)");
+
+                    b.Property<string>("NormalizedName")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("character varying(100)");
+
+                    b.Property<int>("SortOrder")
+                        .HasColumnType("integer");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("NormalizedName")
+                        .IsUnique();
+
+                    b.ToTable("Newspapers");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = new Guid("01920000-0000-7000-8000-000000000001"),
+                            IsActive = true,
+                            Name = "Sud Ouest",
+                            NormalizedName = "sud ouest",
+                            SortOrder = 1
+                        },
+                        new
+                        {
+                            Id = new Guid("01920000-0000-7000-8000-000000000002"),
+                            IsActive = true,
+                            Name = "Le Républicain",
+                            NormalizedName = "le republicain",
+                            SortOrder = 2
+                        });
+                });
+
+            modelBuilder.Entity("LaMeridienneAPI.Models.NewspaperSale", b =>
+                {
+                    b.Property<Guid>("SheetId")
+                        .HasColumnType("uuid");
+
+                    b.Property<Guid>("NewspaperId")
+                        .HasColumnType("uuid");
+
+                    b.Property<DateTimeOffset>("CreatedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<Guid?>("CreatedById")
+                        .HasColumnType("uuid");
+
+                    b.Property<int>("Quantity")
+                        .HasColumnType("integer");
+
+                    b.Property<DateTimeOffset?>("UpdatedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<Guid?>("UpdatedById")
+                        .HasColumnType("uuid");
+
+                    b.HasKey("SheetId", "NewspaperId");
+
+                    b.HasIndex("NewspaperId");
+
+                    b.ToTable("NewspaperSales", t =>
+                        {
+                            t.HasCheckConstraint("CK_NewspaperSale_Quantity", "\"Quantity\" >= 0 AND \"Quantity\" <= 999");
+                        });
                 });
 
             modelBuilder.Entity("LaMeridienneAPI.Models.RefreshToken", b =>
@@ -293,6 +379,29 @@ namespace LaMeridienneAPI.Data.Migrations
                     b.Navigation("Customer");
 
                     b.Navigation("Sheet");
+                });
+
+            modelBuilder.Entity("LaMeridienneAPI.Models.Customer", b =>
+                {
+                    b.HasOne("LaMeridienneAPI.Models.Customer", null)
+                        .WithMany()
+                        .HasForeignKey("MergedIntoId")
+                        .OnDelete(DeleteBehavior.Restrict);
+                });
+
+            modelBuilder.Entity("LaMeridienneAPI.Models.NewspaperSale", b =>
+                {
+                    b.HasOne("LaMeridienneAPI.Models.Newspaper", null)
+                        .WithMany()
+                        .HasForeignKey("NewspaperId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.HasOne("LaMeridienneAPI.Models.DailySheet", null)
+                        .WithMany()
+                        .HasForeignKey("SheetId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
                 });
 
             modelBuilder.Entity("LaMeridienneAPI.Models.RefreshToken", b =>

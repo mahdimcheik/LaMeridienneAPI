@@ -66,7 +66,7 @@ quantité ne descend jamais sous 0 ; un `−1` à 0 est ignoré.
 ## R-10 — Journal désactivé
 
 Un journal n'est jamais supprimé. Désactivé, il n'apparaît plus sur une feuille **sauf** si
-celle-ci porte une vente de ce journal. Sud Ouest et Le Républicain sont créés au premier
+celle-ci porte une vente de ce journal (quantité supérieure à 0). Sud Ouest et Le Républicain sont créés au premier
 démarrage, actifs, dans cet ordre.
 
 ## R-11 — Édition concurrente

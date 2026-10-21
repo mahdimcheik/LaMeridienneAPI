@@ -5,7 +5,10 @@ namespace LaMeridienne.Tests;
 /// <summary>Un conteneur PostgreSQL partagé par toute la collection « Base ».</summary>
 public sealed class PostgresFixture : IAsyncLifetime
 {
-    private readonly PostgreSqlContainer _container = new PostgreSqlBuilder("postgres:17").Build();
+    /// <summary>Chaque test a sa base, donc son pool de connexions : la limite par défaut (100) ne suffit pas.</summary>
+    private readonly PostgreSqlContainer _container = new PostgreSqlBuilder("postgres:17")
+        .WithCommand("-c", "max_connections=500")
+        .Build();
 
     public string ConnectionString => _container.GetConnectionString();
 

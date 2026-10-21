@@ -40,7 +40,8 @@ public sealed record SheetResponse(
     string Notes,
     int NotesVersion,
     IReadOnlyList<EntryResponse> Credits,
-    IReadOnlyList<EntryResponse> Refunds);
+    IReadOnlyList<EntryResponse> Refunds,
+    IReadOnlyList<NewspaperSaleResponse> Newspapers);
 
 public sealed record NotesRequest
 {

@@ -24,16 +24,17 @@ contraire. Erreurs au format `ProblemDetails` (`application/problem+json`), mess
 | `SheetsController` | `GET /api/sheets/today` · `GET /api/sheets/{date}` · `PUT /api/sheets/{date}/notes` | E02, E06 |
 | `CreditsController` | `POST /api/sheets/{date}/credits` · `PUT`/`DELETE /api/credits/{id}` | E03 |
 | `RefundsController` | `POST /api/sheets/{date}/refunds` · `PUT`/`DELETE /api/refunds/{id}` | E04 |
-| `NewspaperSalesController` | `PUT /api/sheets/{date}/newspapers/{newspaperId}` (valeur) · `POST …/increment` (`delta` ±1) | E05 |
+| `NewspaperSalesController` | `PUT /api/sheets/{date}/newspapers/{newspaperId}` (valeur) · `POST …/increment` (`delta` ±1) — créent la feuille si besoin | E05 |
 | `NewspapersController` | `GET`/`POST /api/newspapers` · `PUT /api/newspapers/{id}` · `PUT /api/newspapers/order` | US-E08-01 |
-| `CustomersController` | `GET /api/customers?search=&limit=` · `GET /api/customers/{id}/credits` · `PUT /api/customers/{id}` · `POST /api/customers/{id}/merge` | US-E03-04, US-E03-05, US-E08-02 |
+| `CustomersController` | `GET /api/customers?search=&limit=` · `GET /api/customers/list?search=&page=&pageSize=` · `GET /api/customers/{id}/credits` · `PUT /api/customers/{id}` · `POST /api/customers/{id}/merge` | US-E03-04, US-E03-05, US-E08-02 |
 | `AppointmentsController` | `GET /api/appointments?from=&to=` · `POST` · `PUT`/`DELETE /api/appointments/{id}` | E07 |
 | *(aucun)* | `GET /health` *(anonyme)* — `200 Healthy` si la base répond, `503` sinon | — |
 
 ## Formes principales
 
 ```jsonc
-// GET /api/sheets/2026-10-21 — date sans feuille : "exists": false, listes vides, version 0
+// GET /api/sheets/2026-10-21 — date sans feuille : "exists": false, listes vides, version 0,
+//   "newspapers" = journaux actifs à 0
 // GET /api/sheets/today — crée la feuille du jour si besoin (R-01)
 {
   "date": "2026-10-21",
@@ -44,8 +45,24 @@ contraire. Erreurs au format `ProblemDetails` (`application/problem+json`), mess
                  "comment": null, "createdBy": "Marie", "createdAt": "2026-10-21T07:12:00Z",
                  "updatedBy": null, "updatedAt": null }],
   "refunds":  [],
-  "newspapers": [{ "newspaperId": "…", "name": "Sud Ouest", "isActive": true, "quantity": 14 }] // lot 3
+  // journaux actifs + désactivés ayant une vente ce jour (R-10), dans l'ordre d'administration
+  "newspapers": [{ "newspaperId": "…", "name": "Sud Ouest", "isActive": true, "quantity": 14 }]
 }
+```
+
+```jsonc
+// PUT /api/sheets/2026-10-21/newspapers/{id} { "quantity": 14 }  (entier 0–999, sinon 400)
+// POST …/increment { "delta": 1 }  (+1 ou −1 ; borné à 0–999 sans erreur, R-09)
+// → 200, même forme qu'une ligne de "newspapers" ; journal inconnu → 404
+{ "newspaperId": "…", "name": "Sud Ouest", "isActive": true, "quantity": 15 }
+```
+
+```jsonc
+// GET /api/newspapers → tous, désactivés compris, par "sortOrder"
+[{ "id": "…", "name": "Sud Ouest", "isActive": true, "sortOrder": 1 }]
+// POST /api/newspapers { "name" } → 201 (actif, en dernier) ; PUT /api/newspapers/{id} { "name", "isActive" }
+// nom vide → 400 ; nom déjà pris (sans casse ni accents) → 409
+// PUT /api/newspapers/order { "ids": [ …tous les journaux, une fois… ] } → 200 avec la liste
 ```
 
 ```jsonc
@@ -66,6 +83,12 @@ contraire. Erreurs au format `ProblemDetails` (`application/problem+json`), mess
 [{ "id": "…", "name": "Dupont", "phone": null }]
 // GET /api/customers/{id}/credits → du plus récent au plus ancien, aucun total (R-04)
 { "customer": { "id": "…", "name": "Dupont", "phone": null }, "credits": [ /* lignes, avec "date" */ ] }
+// GET /api/customers/list?search=&page=1&pageSize=50 (≤ 100) → par nom
+{ "items": [{ "id": "…", "name": "Dupont", "phone": null }], "total": 1 }
+// PUT /api/customers/{id} { "name", "phone" } → 200 ; nom porté par un autre client → 409
+{ "title": "Conflit", "status": 409, "detail": "…", "conflictingCustomer": { "id": "…", "name": "Dupont", "phone": null } }
+// POST /api/customers/{A}/merge { "sourceId": "B" } → 200 avec A ; lignes de B (même supprimées) passent à A,
+// B disparaît de la recherche et répond 404 ; fusion avec soi-même → 400
 ```
 
 ```jsonc

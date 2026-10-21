@@ -13,7 +13,7 @@ Les trois comptes sont administrateurs : l'administration est accessible à tous
 
 **Priorité :** Doit · **Dépend de :** US-E05-01
 
-**État :** Absente
+**État :** Implémentée · **Code :** [`NewspapersController`](../../Controllers/NewspapersController.cs)
 
 **Critères d'acceptation**
 
@@ -36,7 +36,7 @@ Les trois comptes sont administrateurs : l'administration est accessible à tous
 
 **Priorité :** Pourrait · **Dépend de :** US-E03-04
 
-**État :** Absente
+**État :** Implémentée (rendez-vous au lot 4) · **Code :** [`CustomersController`](../../Controllers/CustomersController.cs)
 
 **Critères d'acceptation**
 

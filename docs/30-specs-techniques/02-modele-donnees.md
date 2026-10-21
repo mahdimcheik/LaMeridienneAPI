@@ -1,6 +1,6 @@
 # Modèle de données
 
-> Statut : **Brouillon** — lots 1 et 2 migrés ; les entités des lots 3 et 4 restent à confirmer.
+> Statut : **Brouillon** — lots 1 à 3 migrés ; l'entité du lot 4 reste à confirmer.
 
 ```mermaid
 erDiagram
@@ -26,11 +26,11 @@ sont posées par un intercepteur EF à partir de l'utilisateur courant
 | `RefreshToken` | `Id`, `UserId`, `TokenHash`, `CreatedAt`, `ExpiresAt`, `ConsumedAt`, `RevokedAt`, `ReplacedById` | `TokenHash` unique ; jamais le jeton en clair |
 | `SheetLayout` | `UserId`, `TopSplit`, `BottomSplit`, `RowSplit` (`double precision`) | une par utilisateur ; chaque proportion entre 0,15 et 0,85 ([R-07](../20-specs-fonctionnelles/01-regles-metier.md#r-07--disposition-des-cases)) |
 | `DailySheet` | `Id`, `Date` (`date`), `Notes`, `NotesVersion` + audit | `Date` unique ; `Notes` ≤ 10 000 caractères ; `NotesVersion` jeton de concurrence |
-| `Customer` | `Id`, `Name`, `NormalizedName`, `Phone` (`MergedIntoId` au lot 3) | `NormalizedName` unique (sans casse ni accents, calculé par [`CustomerNames`](../../Services/CustomerNames.cs), [R-08](../20-specs-fonctionnelles/01-regles-metier.md#r-08--référentiel-clients)) ; index trigramme GIN (`pg_trgm`) pour la recherche |
+| `Customer` | `Id`, `Name`, `NormalizedName`, `Phone`, `MergedIntoId` | `NormalizedName` unique parmi les fiches non fusionnées (index filtré `MergedIntoId IS NULL`, sans casse ni accents, calculé par [`CustomerNames`](../../Services/CustomerNames.cs), [R-08](../20-specs-fonctionnelles/01-regles-metier.md#r-08--référentiel-clients)) ; index trigramme GIN (`pg_trgm`) pour la recherche |
 | `CreditEntry` | `Id`, `SheetId`, `CustomerId`, `Amount`, `Comment`, `DeletedAt` + audit | `Amount numeric(10,2)`, contrainte `0 < Amount ≤ 10000` ; `Comment` ≤ 500 |
 | `RefundEntry` | mêmes champs que `CreditEntry` | idem |
-| `Newspaper` | `Id`, `Name`, `IsActive`, `SortOrder` | nom unique sans casse ; jamais supprimé |
-| `NewspaperSale` | `SheetId`, `NewspaperId`, `Quantity` + audit | clé `(SheetId, NewspaperId)` ; `0 ≤ Quantity ≤ 999` |
+| `Newspaper` | `Id`, `Name`, `NormalizedName`, `IsActive`, `SortOrder` | `NormalizedName` unique (sans casse ni accents) ; jamais supprimé |
+| `NewspaperSale` | `SheetId`, `NewspaperId`, `Quantity` + audit | clé `(SheetId, NewspaperId)` ; `0 ≤ Quantity ≤ 999` ; écrite par un `INSERT … ON CONFLICT` atomique qui pose lui-même l'audit ([`NewspaperService`](../../Services/NewspaperService.cs)) |
 | `TireAppointment` | `Id`, `Start`, `End`, `CustomerId`, `Phone`, `Vehicle`, `Service`, `Note`, `DeletedAt` + audit | `End > Start` ; index sur `Start` |
 
 Crédits et remboursements sont deux tables distinctes plutôt qu'une table typée : ils sont
@@ -43,4 +43,5 @@ Les lectures filtrent `DeletedAt IS NULL` par un filtre global EF
 ## Données initiales
 
 - Trois `User` depuis la configuration ([ADR-0003](../40-decisions/ADR-0003-comptes-pre-crees.md)).
-- `Newspaper` : « Sud Ouest » (ordre 1), « Le Républicain » (ordre 2), actifs.
+- `Newspaper` : « Sud Ouest » (ordre 1), « Le Républicain » (ordre 2), actifs — insérés par la
+  migration `Newspapers` (`HasData`), donc une seule fois.

@@ -72,11 +72,12 @@ se rejoue en tests d'intégration, y compris deux créations simultanées de la 
 
 ## Lot 3 — Journaux & administration
 
-- [ ] Entités `Newspaper`, `NewspaperSale` + seed Sud Ouest / Le Républicain.
-- [ ] `NewspaperSalesController` : valeur absolue et incrément atomique (`UPDATE … SET quantity = quantity + @d`).
-- [ ] `NewspapersController` : liste, ajout, renommage, activation, ordre.
-- [ ] Inclure les ventes dans `GET /api/sheets/{date}` selon [R-10](../20-specs-fonctionnelles/01-regles-metier.md#r-10--journal-désactivé).
-- [ ] `CustomersController` : renommage et fusion (US-E08-02, *Pourrait*).
+- [x] Entités `Newspaper`, `NewspaperSale` + seed Sud Ouest / Le Républicain.
+- [x] `NewspaperSalesController` : valeur absolue et incrément atomique (`UPDATE … SET quantity = quantity + @d`).
+- [x] `NewspapersController` : liste, ajout, renommage, activation, ordre.
+- [x] Inclure les ventes dans `GET /api/sheets/{date}` selon [R-10](../20-specs-fonctionnelles/01-regles-metier.md#r-10--journal-désactivé).
+- [x] `CustomersController` : liste paginée, renommage et fusion (US-E08-02, *Pourrait*) ; une
+      fiche fusionnée garde `MergedIntoId` et libère son nom (index unique filtré).
 
 **Stories :** E05, US-E08-01, US-E08-02.
 **Vérifiable quand :** 20 incréments parallèles donnent +20 ; un journal désactivé reste sur
@@ -85,6 +86,7 @@ les feuilles où il a des ventes.
 ## Lot 4 — Rendez-vous pneus
 
 - [ ] Entité `TireAppointment` + migration, index sur `Start`.
+- [ ] Fusion de clients ([`CustomerService.MergeAsync`](../../Services/CustomerService.cs)) : déplacer aussi les rendez-vous.
 - [ ] `AppointmentsController` : période (≤ 62 jours), création, modification, suppression.
 - [ ] Contrôles de durée et de pas de 15 minutes ([R-12](../20-specs-fonctionnelles/01-regles-metier.md#r-12--rendez-vous-pneus)).
 - [ ] Détection et renvoi des chevauchements ([R-13](../20-specs-fonctionnelles/01-regles-metier.md#r-13--chevauchement-de-rendez-vous)).
