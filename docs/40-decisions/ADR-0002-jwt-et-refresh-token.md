@@ -1,7 +1,7 @@
 # ADR-0002 — Jeton d'accès JWT et jeton de renouvellement rotatif
 
 **Statut :** Accepté
-**Application :** À faire
+**Application :** Appliquée
 **Date :** 2026-10-21
 
 ## Contexte

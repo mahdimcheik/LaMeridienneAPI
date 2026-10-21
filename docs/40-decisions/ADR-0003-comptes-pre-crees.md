@@ -1,7 +1,7 @@
 # ADR-0003 — Trois comptes pré-créés, sans inscription
 
 **Statut :** Accepté
-**Application :** À faire
+**Application :** Appliquée
 **Date :** 2026-10-21
 
 ## Contexte

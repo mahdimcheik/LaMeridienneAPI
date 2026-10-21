@@ -13,12 +13,13 @@ contraire. Erreurs au format `ProblemDetails` (`application/problem+json`), mess
 | `404` | ressource inconnue ou supprimée |
 | `409` | conflit de version (notes) ou de nom (journal, client) |
 | `423` | compte verrouillé |
+| `429` | trop de requêtes sur `login`/`refresh` (`Retry-After`) |
 
 ## Contrôleurs
 
 | Contrôleur | Route | Stories |
 |---|---|---|
-| `AuthController` | `POST /api/auth/login` *(anonyme)* · `POST /api/auth/refresh` *(anonyme, cookie)* · `POST /api/auth/logout` · `GET /api/auth/me` | E01 |
+| `AuthController` | `POST /api/auth/login` *(anonyme)* · `POST /api/auth/refresh` *(anonyme, cookie)* · `POST /api/auth/logout` *(anonyme, cookie)* · `GET /api/auth/me` | E01 |
 | `AccountController` | `PUT /api/account/password` · `GET`/`PUT /api/account/layout` | US-E08-03, US-E02-03 |
 | `SheetsController` | `GET /api/sheets/today` · `GET /api/sheets/{date}` · `PUT /api/sheets/{date}/notes` | E02, E06 |
 | `CreditsController` | `POST /api/sheets/{date}/credits` · `PUT`/`DELETE /api/credits/{id}` | E03 |
@@ -56,5 +57,21 @@ contraire. Erreurs au format `ProblemDetails` (`application/problem+json`), mess
   "overlaps": [{ "id": "…", "start": "…", "end": "…", "customerName": "Martin" }] }
 ```
 
-Le jeton d'accès est renvoyé dans le corps de `login`/`refresh` (`{ "accessToken", "expiresAt",
-"user" }`) ; le jeton de renouvellement **uniquement** en cookie ([sécurité](04-securite.md)).
+Le jeton d'accès est renvoyé dans le corps de `login`/`refresh` ; le jeton de renouvellement
+**uniquement** en cookie ([sécurité](04-securite.md)).
+
+```jsonc
+// POST /api/auth/login → 200 (401 identifiants refusés, 423 verrouillé, 429 trop de requêtes)
+{ "userName": "marie", "password": "…" }
+// réponse de login et refresh ; GET /api/auth/me rend seulement l'objet "user"
+{ "accessToken": "eyJ…", "expiresAt": "2026-10-21T08:15:00Z",
+  "user": { "id": "…", "userName": "marie", "displayName": "Marie" } }
+```
+
+```jsonc
+// PUT /api/account/password → 204 ; 400 avec errors.currentPassword ou errors.newPassword
+{ "currentPassword": "…", "newPassword": "au moins 12 caractères" }
+```
+
+`refresh` et `logout` ne lisent que le cookie `lm_refresh` ; `logout` rend `204` même sans
+session.

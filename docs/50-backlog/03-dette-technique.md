@@ -5,4 +5,4 @@
 
 | ID | Écart | Lot |
 |---|---|---|
-| D-04 | Aucune authentification dans [`Program.cs`](../../Program.cs) | 1 |
+| D-05 | Pas de `ForwardedHeaders` : derrière le reverse proxy, la limitation de débit de [`AuthSetup`](../../Auth/AuthSetup.cs) verrait une seule IP | 5 |

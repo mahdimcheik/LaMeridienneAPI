@@ -7,8 +7,8 @@ Il n'existe qu'**un rôle** : `Admin`. Les trois comptes le portent
 
 | Opération | Anonyme | Admin |
 |---|---|---|
-| Se connecter, renouveler la session | ✓ | ✓ |
-| Se déconnecter, changer son mot de passe | — | ✓ (son compte) |
+| Se connecter, renouveler la session, se déconnecter | ✓ (sa propre session) | ✓ |
+| Changer son mot de passe | — | ✓ (son compte) |
 | Lire et modifier toute feuille, ligne, vente, note | — | ✓ |
 | Lire et modifier tout rendez-vous | — | ✓ |
 | Gérer journaux et clients | — | ✓ |

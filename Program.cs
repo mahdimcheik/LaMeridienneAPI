@@ -1,6 +1,7 @@
 using LaMeridienneAPI.Auth;
 using LaMeridienneAPI.Data;
 using LaMeridienneAPI.Infrastructure;
+using Microsoft.AspNetCore.Mvc.ModelBinding.Metadata;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
 
@@ -25,7 +26,9 @@ builder.Services.AddDbContext<AppDbContext>((sp, o) => o
 
 builder.Services.AddHealthChecks().AddDbContextCheck<AppDbContext>();
 builder.Services.AddFrenchProblemDetails();
-builder.Services.AddControllers();
+builder.Services.AddLaMeridienneAuth(builder.Configuration);
+builder.Services.AddControllers(o =>
+    o.ModelMetadataDetailsProviders.Add(new SystemTextJsonValidationMetadataProvider()));
 builder.Services.AddOpenApi();
 
 var app = builder.Build();
@@ -40,10 +43,13 @@ if (app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 
+app.UseCors(AuthSetup.ClientCors);
+app.UseAuthentication();
+app.UseRateLimiter();
 app.UseAuthorization();
 
-app.MapHealthChecks("/health");
-app.MapControllers();
+app.MapHealthChecks("/health").AllowAnonymous();
+app.MapControllers().RequireAuthorization(AuthSetup.AdminPolicy);
 
 app.Run();
 

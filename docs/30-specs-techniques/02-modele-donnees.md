@@ -23,7 +23,7 @@ sont posées par un intercepteur EF à partir de l'utilisateur courant
 | Entité | Champs | Contraintes |
 |---|---|---|
 | `User` | `Id`, `UserName`, `DisplayName`, `PasswordHash`, `FailedLoginCount`, `LockedUntil` | `UserName` unique |
-| `RefreshToken` | `Id`, `UserId`, `TokenHash`, `ExpiresAt`, `ConsumedAt`, `RevokedAt`, `ReplacedById` | `TokenHash` unique ; jamais le jeton en clair |
+| `RefreshToken` | `Id`, `UserId`, `TokenHash`, `CreatedAt`, `ExpiresAt`, `ConsumedAt`, `RevokedAt`, `ReplacedById` | `TokenHash` unique ; jamais le jeton en clair |
 | `SheetLayout` | `UserId`, `Sections` (`jsonb`) | une par utilisateur ; contenu validé ([R-07](../20-specs-fonctionnelles/01-regles-metier.md#r-07--disposition-des-cases)) |
 | `DailySheet` | `Id`, `Date` (`date`), `Notes`, `NotesVersion` | `Date` unique ; `Notes` ≤ 10 000 caractères ; `NotesVersion` jeton de concurrence |
 | `Customer` | `Id`, `Name`, `NormalizedName`, `Phone`, `MergedIntoId` | `NormalizedName` unique (sans casse ni accents, [R-08](../20-specs-fonctionnelles/01-regles-metier.md#r-08--référentiel-clients)) ; index trigramme pour la recherche |

@@ -3,3 +3,32 @@
 GET {{LaMeridienneAPI_HostAddress}}/health
 
 ###
+
+# @name login
+POST {{LaMeridienneAPI_HostAddress}}/api/auth/login
+Content-Type: application/json
+
+{ "userName": "marie", "password": "mot-de-passe-marie" }
+
+###
+
+GET {{LaMeridienneAPI_HostAddress}}/api/auth/me
+Authorization: Bearer {{login.response.body.accessToken}}
+
+###
+
+POST {{LaMeridienneAPI_HostAddress}}/api/auth/refresh
+
+###
+
+PUT {{LaMeridienneAPI_HostAddress}}/api/account/password
+Authorization: Bearer {{login.response.body.accessToken}}
+Content-Type: application/json
+
+{ "currentPassword": "mot-de-passe-marie", "newPassword": "un-nouveau-mot-de-passe" }
+
+###
+
+POST {{LaMeridienneAPI_HostAddress}}/api/auth/logout
+
+###

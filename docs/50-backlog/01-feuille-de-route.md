@@ -38,14 +38,14 @@ flowchart LR
 
 **Objectif :** les trois comptes peuvent se connecter ; rien d'autre n'est accessible sans jeton.
 
-- [ ] Entités `User`, `RefreshToken` + migration.
-- [ ] Seed des trois comptes depuis `Seed:Users`, échec au démarrage si incomplet.
-- [ ] `AuthController` : `login`, `refresh` (rotation + détection de réutilisation), `logout`, `me`.
-- [ ] Verrouillage après 5 échecs ([R-02](../20-specs-fonctionnelles/01-regles-metier.md#r-02--verrouillage)).
-- [ ] Politique `Admin` appliquée par défaut à tous les contrôleurs.
-- [ ] CORS avec identifiants pour `http://localhost:4200`.
-- [ ] Limitation de débit sur `/api/auth/*`.
-- [ ] `AccountController` : changement de mot de passe (US-E08-03).
+- [x] Entités `User`, `RefreshToken` + migration.
+- [x] Seed des trois comptes depuis `Seed:Users`, échec au démarrage si incomplet.
+- [x] `AuthController` : `login`, `refresh` (rotation + détection de réutilisation), `logout`, `me`.
+- [x] Verrouillage après 5 échecs ([R-02](../20-specs-fonctionnelles/01-regles-metier.md#r-02--verrouillage)).
+- [x] Politique `Admin` appliquée par défaut à tous les contrôleurs.
+- [x] CORS avec identifiants pour `http://localhost:4200`.
+- [x] Limitation de débit sur `/api/auth/*`.
+- [x] `AccountController` : changement de mot de passe (US-E08-03).
 
 **Stories :** US-E01-01 à US-E01-04, US-E08-03.
 **Vérifiable quand :** les tests d'intégration couvrent connexion, rotation, réutilisation,

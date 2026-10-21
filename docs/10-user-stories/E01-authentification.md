@@ -14,7 +14,7 @@ Il n'y a **pas d'inscription** : les trois comptes existent dès le premier dém
 
 **Priorité :** Doit · **Dépend de :** US-E01-04
 
-**État :** Absente
+**État :** Implémentée · **Code :** [`AuthController`](../../Controllers/AuthController.cs)
 
 **Critères d'acceptation**
 
@@ -42,7 +42,7 @@ Il n'y a **pas d'inscription** : les trois comptes existent dès le premier dém
 
 **Priorité :** Doit · **Dépend de :** US-E01-01
 
-**État :** Absente
+**État :** Implémentée · **Code :** [`AuthController`](../../Controllers/AuthController.cs)
 
 **Critères d'acceptation**
 
@@ -68,7 +68,7 @@ Il n'y a **pas d'inscription** : les trois comptes existent dès le premier dém
 
 **Priorité :** Doit · **Dépend de :** US-E01-01
 
-**État :** Absente
+**État :** Implémentée · **Code :** [`AuthController`](../../Controllers/AuthController.cs)
 
 **Critères d'acceptation**
 
@@ -88,7 +88,7 @@ Il n'y a **pas d'inscription** : les trois comptes existent dès le premier dém
 
 **Priorité :** Doit
 
-**État :** Absente
+**État :** Implémentée · **Code :** [`UserSeeder`](../../Auth/UserSeeder.cs)
 
 **Critères d'acceptation**
 

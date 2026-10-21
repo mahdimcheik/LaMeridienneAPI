@@ -12,6 +12,7 @@ public sealed class ProblemDetailsTests
 {
     private sealed class ThrowingApiFactory() : ApiFactory("Host=127.0.0.1;Port=1;Database=absente;Username=x;Password=x")
     {
+
         protected override void ConfigureWebHost(IWebHostBuilder builder)
         {
             base.ConfigureWebHost(builder);
@@ -31,7 +32,7 @@ public sealed class ProblemDetailsTests
     [Fact]
     public async Task Erreur_inattendue_rend_un_problem_details_en_francais_sans_fuite()
     {
-        await using var factory = new ThrowingApiFactory();
+        await using var factory = new ThrowingApiFactory { WithSeeder = false };
 
         var response = await factory.CreateClient().GetAsync("/test/boom");
 
@@ -45,7 +46,7 @@ public sealed class ProblemDetailsTests
     [Fact]
     public async Task Route_inconnue_rend_un_404_en_francais()
     {
-        await using var factory = new ThrowingApiFactory();
+        await using var factory = new ThrowingApiFactory { WithSeeder = false };
 
         var response = await factory.CreateClient().GetAsync("/api/inexistante");
 
