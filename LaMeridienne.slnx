@@ -1,0 +1,6 @@
+<Solution>
+  <Project Path="LaMeridienneAPI.csproj" />
+  <Folder Name="/tests/">
+    <Project Path="tests/LaMeridienne.Tests/LaMeridienne.Tests.csproj" />
+  </Folder>
+</Solution>

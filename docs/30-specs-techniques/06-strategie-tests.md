@@ -7,7 +7,7 @@
 | Unitaire | xUnit | services : règles `R-xx` (montants, verrouillage, rotation, incréments, chevauchement) |
 | Intégration | xUnit + `WebApplicationFactory` + Testcontainers PostgreSQL | chaque contrôleur : nominal, `400`, `401`, `404`, `409` |
 
-Projet `tests/LaMeridienne.Tests` (à créer, lot 0). Un test cite l'identifiant de la story ou
+Projet `tests/LaMeridienne.Tests`, lancé par `dotnet test LaMeridienne.slnx`. Un test cite l'identifiant de la story ou
 de la règle qu'il vérifie dans son nom (`US_E03_01_refuse_un_montant_negatif`).
 
 Priorités de couverture :

@@ -21,17 +21,17 @@ flowchart LR
 
 **Objectif :** un projet qui démarre sur PostgreSQL, testable, sans reliquat du modèle.
 
-- [ ] Supprimer `WeatherForecast.cs` et `Controllers/WeatherForecastController.cs`.
-- [ ] Ajouter EF Core + Npgsql, `AppDbContext`, première migration vide.
-- [ ] `compose.yaml` avec PostgreSQL 17 et volume nommé.
-- [ ] `AddProblemDetails`, gestionnaire d'exceptions global, messages en français.
-- [ ] `TimeProvider` injecté, fuseau `Europe/Paris` en configuration.
-- [ ] Intercepteur EF d'audit (`CreatedAt/By`, `UpdatedAt/By`) et filtre global `DeletedAt`.
-- [ ] `GET /health`.
-- [ ] Projet `tests/LaMeridienne.Tests` avec `WebApplicationFactory` + Testcontainers.
+- [x] Supprimer `WeatherForecast.cs` et `Controllers/WeatherForecastController.cs`.
+- [x] Ajouter EF Core + Npgsql, `AppDbContext`, première migration vide.
+- [x] `compose.yaml` avec PostgreSQL 17 et volume nommé.
+- [x] `AddProblemDetails`, gestionnaire d'exceptions global, messages en français.
+- [x] `TimeProvider` injecté, fuseau `Europe/Paris` en configuration.
+- [x] Intercepteur EF d'audit (`CreatedAt/By`, `UpdatedAt/By`) et filtre global `DeletedAt`.
+- [x] `GET /health`.
+- [x] Projet `tests/LaMeridienne.Tests` avec `WebApplicationFactory` + Testcontainers.
 - [ ] Ajouter `docs/check-docs.sh` à la CI (lot 5) ; le lancer à la main d'ici là.
 
-**Vérifiable quand :** `dotnet test` passe avec un test de santé qui touche la base.
+**Vérifiable quand :** `dotnet test LaMeridienne.slnx` passe avec un test de santé qui touche la base.
 **ADR :** [ADR-0001](../40-decisions/ADR-0001-architecture-simple.md).
 
 ## Lot 1 — Authentification

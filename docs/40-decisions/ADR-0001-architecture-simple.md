@@ -1,7 +1,7 @@
 # ADR-0001 — Architecture simple
 
 **Statut :** Accepté
-**Application :** À faire
+**Application :** Partielle
 **Date :** 2026-10-21
 
 ## Contexte

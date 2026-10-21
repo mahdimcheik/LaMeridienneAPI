@@ -67,6 +67,7 @@ fi
 echo "── 6. Couverture des contrôleurs ──"
 C="$DOCS/30-specs-techniques/03-contrat-api.md"; n=0; miss=0
 for f in Controllers/*.cs; do
+  [ -e "$f" ] || continue
   b=$(basename "$f" .cs)
   grep -q -- "$b" "$C" || { ko "$b absent du contrat d'API"; miss=1; }
   n=$((n+1))

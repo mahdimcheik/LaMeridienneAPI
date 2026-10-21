@@ -27,7 +27,7 @@ contraire. Erreurs au format `ProblemDetails` (`application/problem+json`), mess
 | `NewspapersController` | `GET`/`POST /api/newspapers` · `PUT /api/newspapers/{id}` · `PUT /api/newspapers/order` | US-E08-01 |
 | `CustomersController` | `GET /api/customers?search=&limit=` · `GET /api/customers/{id}/credits` · `PUT /api/customers/{id}` · `POST /api/customers/{id}/merge` | US-E03-04, US-E03-05, US-E08-02 |
 | `AppointmentsController` | `GET /api/appointments?from=&to=` · `POST` · `PUT`/`DELETE /api/appointments/{id}` | E07 |
-| `WeatherForecastController` | **à supprimer** — reliquat du modèle de projet (lot 0 de la [feuille de route](../50-backlog/01-feuille-de-route.md)) | — |
+| *(aucun)* | `GET /health` *(anonyme)* — `200 Healthy` si la base répond, `503` sinon | — |
 
 ## Formes principales
 
