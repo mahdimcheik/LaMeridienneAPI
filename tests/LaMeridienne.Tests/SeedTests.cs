@@ -47,8 +47,8 @@ public sealed class SeedTests(PostgresFixture db)
     }
 
     [Theory]
-    [InlineData("Seed:Users:1:Password", "Seed__Users__1__Password est absente")]
-    [InlineData("Seed:Users:2:UserName", "Seed__Users__2__UserName est absente")]
+    [InlineData("Seed:Users:1:Password", "SEED_USER_1_PASSWORD est absente")]
+    [InlineData("Seed:Users:2:UserName", "SEED_USER_2_NAME est absente")]
     public async Task US_E01_04_une_variable_manquante_empeche_le_demarrage_et_est_nommee(string removed, string expected)
     {
         await using var factory = await ApiFactory.CreateAsync(_connectionString, f => f.Settings.Remove(removed));
@@ -67,7 +67,7 @@ public sealed class SeedTests(PostgresFixture db)
 
         var error = Record.Exception(() => factory.CreateClient());
 
-        Assert.Contains("Seed__Users__0__Password doit contenir au moins 12 caractères", error?.ToString());
+        Assert.Contains("SEED_USER_0_PASSWORD doit contenir au moins 12 caractères", error?.ToString());
     }
 
     [Fact]
@@ -77,6 +77,6 @@ public sealed class SeedTests(PostgresFixture db)
 
         var error = Record.Exception(() => factory.CreateClient());
 
-        Assert.Contains("Jwt__Key", error?.ToString());
+        Assert.Contains("JWT_KEY", error?.ToString());
     }
 }

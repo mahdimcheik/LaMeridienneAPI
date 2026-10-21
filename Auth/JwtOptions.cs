@@ -18,11 +18,11 @@ public sealed class JwtOptionsValidator : IValidateOptions<JwtOptions>
     {
         var failures = new List<string>();
         if (Encoding.UTF8.GetByteCount(options.Key) < 32)
-            failures.Add("Jwt__Key est absente ou fait moins de 32 octets.");
+            failures.Add("JWT_KEY est absente ou fait moins de 32 octets.");
         if (string.IsNullOrWhiteSpace(options.Issuer))
-            failures.Add("Jwt__Issuer est absente.");
+            failures.Add("JWT_ISSUER est absente.");
         if (string.IsNullOrWhiteSpace(options.Audience))
-            failures.Add("Jwt__Audience est absente.");
+            failures.Add("JWT_AUDIENCE est absente.");
         return failures.Count == 0 ? ValidateOptionsResult.Success : ValidateOptionsResult.Fail(failures);
     }
 }

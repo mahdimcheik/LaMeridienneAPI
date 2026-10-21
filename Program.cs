@@ -8,10 +8,14 @@ using Microsoft.Extensions.Options;
 
 var builder = WebApplication.CreateBuilder(args);
 
+var envFile = builder.Configuration["ENV_FILE"] ?? ".env";
+if (envFile.Length > 0)
+    builder.Configuration.AddDotEnvFile(Path.Combine(builder.Environment.ContentRootPath, envFile));
+
 var connectionString = builder.Configuration.GetConnectionString("Default");
 if (string.IsNullOrWhiteSpace(connectionString))
     throw new InvalidOperationException(
-        "ConnectionStrings:Default est absente. En développement : dotnet user-secrets set \"ConnectionStrings:Default\" \"…\".");
+        "Connexion PostgreSQL absente : renseignez POSTGRES_HOST, POSTGRES_DB, POSTGRES_USER et POSTGRES_PASSWORD dans .env (modèle : .env.example).");
 
 builder.Services.AddSingleton(TimeProvider.System);
 builder.Services.AddOptions<ShopOptions>().BindConfiguration(ShopOptions.Section).ValidateOnStart();
@@ -24,6 +28,8 @@ builder.Services.AddScoped<AuditInterceptor>();
 builder.Services.AddDbContext<AppDbContext>((sp, o) => o
     .UseNpgsql(connectionString)
     .AddInterceptors(sp.GetRequiredService<AuditInterceptor>()));
+
+builder.Services.AddHostedService<Migrator>();
 
 builder.Services.AddHealthChecks().AddDbContextCheck<AppDbContext>();
 builder.Services.AddFrenchProblemDetails();
@@ -40,13 +46,6 @@ builder.Services.AddControllers(o =>
 builder.Services.AddOpenApi();
 
 var app = builder.Build();
-
-// Avant tout démarrage : ni comptes à créer, ni options Jwt/Seed à valider.
-if (args.Contains(Migrator.Argument))
-{
-    await Migrator.RunAsync(app.Services);
-    return;
-}
 
 app.UseExceptionHandler();
 app.UseStatusCodePages();

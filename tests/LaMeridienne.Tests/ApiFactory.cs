@@ -30,22 +30,23 @@ public class ApiFactory : WebApplicationFactory<Program>
         ("lea", "Léa", "mot-de-passe-lea"),
     ];
 
-    /// <summary>Faux : la base est absente, le démarrage ne doit pas tenter de créer les comptes.</summary>
-    public bool WithSeeder { get; init; } = true;
+    /// <summary>Faux : la base est absente, le démarrage ne doit ni migrer ni créer les comptes.</summary>
+    public bool WithDatabase { get; init; } = true;
 
     public TimeProvider? Time { get; init; }
 
+    /// <summary>Vide : le <c>.env</c> de développement à la racine ne doit pas influer sur les tests.</summary>
+    public string EnvFile { get; set; } = "";
+
     public Dictionary<string, string?> Settings { get; } = DefaultSettings();
 
-    /// <summary>Migre la base avant le démarrage de l'hôte, car les comptes sont créés au démarrage.</summary>
-    public static async Task<ApiFactory> CreateAsync(string connectionString, Action<ApiFactory>? configure = null,
+    /// <summary>La base est créée et migrée au démarrage de l'hôte (<see cref="Migrator"/>).</summary>
+    public static Task<ApiFactory> CreateAsync(string connectionString, Action<ApiFactory>? configure = null,
         TimeProvider? time = null)
     {
-        await using (var db = new AppDbContext(new DbContextOptionsBuilder<AppDbContext>().UseNpgsql(connectionString).Options))
-            await db.Database.MigrateAsync();
         var factory = new ApiFactory(connectionString) { Time = time };
         configure?.Invoke(factory);
-        return factory;
+        return Task.FromResult(factory);
     }
 
     private static Dictionary<string, string?> DefaultSettings()
@@ -68,15 +69,19 @@ public class ApiFactory : WebApplicationFactory<Program>
     protected override void ConfigureWebHost(IWebHostBuilder builder)
     {
         builder.UseEnvironment("Testing");
-        builder.UseSetting("ConnectionStrings:Default", _connectionString);
+        builder.UseSetting("ENV_FILE", EnvFile);
+        if (_connectionString.Length > 0)
+            builder.UseSetting("ConnectionStrings:Default", _connectionString);
         foreach (var (key, value) in Settings)
             builder.UseSetting(key, value);
 
         builder.ConfigureTestServices(services =>
         {
-            if (!WithSeeder)
-                foreach (var seeder in services.Where(d => d.ImplementationType == typeof(UserSeeder)).ToList())
-                    services.Remove(seeder);
+            if (!WithDatabase)
+                foreach (var startup in services
+                             .Where(d => d.ImplementationType == typeof(Migrator) || d.ImplementationType == typeof(UserSeeder))
+                             .ToList())
+                    services.Remove(startup);
             if (Time is not null)
                 services.Replace(ServiceDescriptor.Singleton(Time));
         });

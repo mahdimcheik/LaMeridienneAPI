@@ -24,17 +24,21 @@ ce qui suffit contre la falsification de requête : les autres appels n'utilisen
 
 ## Secrets et configuration
 
-Lus depuis les variables d'environnement (ou `dotnet user-secrets` en développement), **jamais**
-commités. L'API refuse de démarrer si l'un manque.
+Lus par l'API dans un fichier `.env` à clés plates (racine du dépôt en développement,
+`deploy/.env` monté en lecture seule en production), **jamais** commité ni copié dans l'image
+(`.gitignore`, `.dockerignore`). Une variable d'environnement de même rôle (`Jwt__Key`…) l'emporte
+sur le fichier ; `ENV_FILE` change son chemin (vide : pas de fichier). L'API refuse de démarrer si
+l'un manque, et le nomme.
 
 | Variable | Rôle |
 |---|---|
-| `ConnectionStrings__Default` | chaîne PostgreSQL |
-| `Jwt__Key` | clé de signature, ≥ 32 octets |
-| `Jwt__Issuer`, `Jwt__Audience` | émetteur et audience |
-| `Seed__Users__0__UserName` … `Seed__Users__2__Password` | les trois comptes initiaux ; mot de passe ≥ 12 caractères ([R-14](../20-specs-fonctionnelles/01-regles-metier.md#r-14--mot-de-passe)) |
-| `Seed__Users__n__DisplayName` | nom affiché (facultatif, l'identifiant par défaut) |
-| `Cors__Origins` | origines autorisées (dev) |
+| `POSTGRES_HOST`, `POSTGRES_PORT` (5432), `POSTGRES_DB`, `POSTGRES_USER`, `POSTGRES_PASSWORD` | connexion PostgreSQL |
+| `JWT_KEY` | clé de signature, ≥ 32 octets |
+| `JWT_ISSUER`, `JWT_AUDIENCE` | émetteur et audience (facultatifs : `LaMeridienneAPI`, `LaMeridienneClient`) |
+| `SEED_USER_0_NAME` … `SEED_USER_2_PASSWORD` | les trois comptes initiaux ; mot de passe ≥ 12 caractères ([R-14](../20-specs-fonctionnelles/01-regles-metier.md#r-14--mot-de-passe)) |
+| `SEED_USER_n_DISPLAY` | nom affiché (facultatif, l'identifiant par défaut) |
+| `CORS_ORIGINS` | origines autorisées, séparées par des virgules (dev : `appsettings.Development.json`) |
+| `SHOP_TIMEZONE` | fuseau de la boutique (facultatif : `Europe/Paris`) |
 
 ## Autres mesures
 

@@ -2,15 +2,17 @@ using Microsoft.EntityFrameworkCore;
 
 namespace LaMeridienneAPI.Data;
 
-/// <summary>Commande <c>--migrate</c> : applique les migrations puis rend la main, sans démarrer l'API.</summary>
-public static class Migrator
+/// <summary>
+/// Applique les migrations en attente à chaque démarrage, dans tous les environnements ; crée la base
+/// si elle n'existe pas. Enregistré avant <c>UserSeeder</c> : les services hébergés démarrent dans l'ordre.
+/// </summary>
+public sealed class Migrator(IServiceScopeFactory scopes) : IHostedService
 {
-    public const string Argument = "--migrate";
-
-    public static async Task RunAsync(IServiceProvider services)
+    public async Task StartAsync(CancellationToken ct)
     {
-        await using var scope = services.CreateAsyncScope();
-        var db = scope.ServiceProvider.GetRequiredService<AppDbContext>();
-        await db.Database.MigrateAsync();
+        await using var scope = scopes.CreateAsyncScope();
+        await scope.ServiceProvider.GetRequiredService<AppDbContext>().Database.MigrateAsync(ct);
     }
+
+    public Task StopAsync(CancellationToken ct) => Task.CompletedTask;
 }

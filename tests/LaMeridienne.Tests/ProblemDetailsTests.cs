@@ -32,7 +32,7 @@ public sealed class ProblemDetailsTests
     [Fact]
     public async Task Erreur_inattendue_rend_un_problem_details_en_francais_sans_fuite()
     {
-        await using var factory = new ThrowingApiFactory { WithSeeder = false };
+        await using var factory = new ThrowingApiFactory { WithDatabase = false };
 
         var response = await factory.CreateClient().GetAsync("/test/boom");
 
@@ -46,7 +46,7 @@ public sealed class ProblemDetailsTests
     [Fact]
     public async Task Route_inconnue_rend_un_404_en_francais()
     {
-        await using var factory = new ThrowingApiFactory { WithSeeder = false };
+        await using var factory = new ThrowingApiFactory { WithDatabase = false };
 
         var response = await factory.CreateClient().GetAsync("/api/inexistante");
 

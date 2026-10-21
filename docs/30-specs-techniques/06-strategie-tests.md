@@ -6,7 +6,7 @@
 |---|---|---|
 | Unitaire | xUnit | services : règles `R-xx` (montants, verrouillage, rotation, incréments, chevauchement) |
 | Intégration | xUnit + `WebApplicationFactory` + Testcontainers PostgreSQL | chaque contrôleur : nominal, `400`, `401`, `404`, `409` |
-| Mise en service | xUnit + Testcontainers ; scripts `deploy/` à la main | `--migrate` sur base vide, limitation de débit derrière le proxy ; restauration répétée par `deploy/check-restore.sh` |
+| Mise en service | xUnit + Testcontainers ; scripts `deploy/` à la main | migration au démarrage sur base absente, limitation de débit derrière le proxy ; restauration répétée par `deploy/check-restore.sh` |
 
 Projet `tests/LaMeridienne.Tests`, lancé par `dotnet test LaMeridienne.slnx` et par la CI à chaque *push*. Un test cite l'identifiant de la story ou
 de la règle qu'il vérifie dans son nom (`US_E03_01_refuse_un_montant_negatif`).

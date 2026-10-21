@@ -13,6 +13,9 @@ tâches est la [feuille de route](docs/50-backlog/01-feuille-de-route.md).
 ./docs/check-docs.sh   # cohérence de la documentation
 ```
 
+Développement : `cp .env.example .env` (configuration lue par l'API), puis voir
+[exploitation](docs/30-specs-techniques/05-exploitation.md#développement-local).
+
 Production (VPS derrière Nginx Proxy Manager) : voir
 [exploitation](docs/30-specs-techniques/05-exploitation.md#production).
 

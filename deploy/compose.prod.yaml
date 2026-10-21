@@ -3,14 +3,6 @@
 # Usage (depuis la racine du dépôt) : docker compose -f deploy/compose.prod.yaml up -d --build
 name: lameridienne
 
-x-api: &api
-  build: ..
-  image: lameridienne-api:latest
-  environment:
-    ASPNETCORE_ENVIRONMENT: Production
-    ConnectionStrings__Default: "Host=postgres;Database=lameridienne;Username=lameridienne;Password=${POSTGRES_PASSWORD:?};Gss Encryption Mode=Disable"
-  networks: [internal]
-
 services:
   postgres:
     image: postgres:17
@@ -28,38 +20,22 @@ services:
       timeout: 3s
       retries: 10
 
-  migrate:
-    <<: *api
-    command: ["--migrate"]
-    restart: "no"
-    depends_on:
-      postgres:
-        condition: service_healthy
-
+  # Applique les migrations en attente à chaque démarrage, puis crée les comptes manquants.
   api:
-    <<: *api
+    build: ..
+    image: lameridienne-api:latest
     container_name: lameridienne-api
     restart: unless-stopped
     environment:
       ASPNETCORE_ENVIRONMENT: Production
       ASPNETCORE_FORWARDEDHEADERS_ENABLED: "true"
-      ConnectionStrings__Default: "Host=postgres;Database=lameridienne;Username=lameridienne;Password=${POSTGRES_PASSWORD:?};Gss Encryption Mode=Disable"
-      Jwt__Key: ${JWT_KEY:?JWT_KEY manque dans deploy/.env}
-      Jwt__Issuer: LaMeridienneAPI
-      Jwt__Audience: LaMeridienneClient
-      Seed__Users__0__UserName: ${SEED_USER_0_NAME:-}
-      Seed__Users__0__DisplayName: ${SEED_USER_0_DISPLAY:-}
-      Seed__Users__0__Password: ${SEED_USER_0_PASSWORD:-}
-      Seed__Users__1__UserName: ${SEED_USER_1_NAME:-}
-      Seed__Users__1__DisplayName: ${SEED_USER_1_DISPLAY:-}
-      Seed__Users__1__Password: ${SEED_USER_1_PASSWORD:-}
-      Seed__Users__2__UserName: ${SEED_USER_2_NAME:-}
-      Seed__Users__2__DisplayName: ${SEED_USER_2_DISPLAY:-}
-      Seed__Users__2__Password: ${SEED_USER_2_PASSWORD:-}
+    # L'API lit elle-même ses secrets (POSTGRES_*, JWT_KEY, SEED_USER_*) dans ce fichier.
+    volumes:
+      - ./.env:/app/.env:ro
     networks: [internal, proxy]
     depends_on:
-      migrate:
-        condition: service_completed_successfully
+      postgres:
+        condition: service_healthy
 
   backup:
     image: postgres:17

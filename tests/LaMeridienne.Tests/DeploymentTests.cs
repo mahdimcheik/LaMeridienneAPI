@@ -6,18 +6,16 @@ using Microsoft.Extensions.DependencyInjection;
 
 namespace LaMeridienne.Tests;
 
-/// <summary>Mise en service : commande de migration et API derrière le reverse proxy.</summary>
+/// <summary>Mise en service : migration au démarrage et API derrière le reverse proxy.</summary>
 [Collection(DatabaseCollection.Name)]
 public sealed class DeploymentTests(PostgresFixture db)
 {
     private string NewDatabase(string prefix) => db.ConnectionStringFor(prefix + Guid.NewGuid().ToString("N"));
 
     [Fact]
-    public async Task La_commande_migrate_applique_toutes_les_migrations_sur_une_base_vide()
+    public async Task Le_demarrage_cree_la_base_et_applique_toutes_les_migrations()
     {
-        await using var factory = new ApiFactory(NewDatabase("migrate_")) { WithSeeder = false };
-
-        await Migrator.RunAsync(factory.Services);
+        await using var factory = new ApiFactory(NewDatabase("migrate_"));
 
         await using var scope = factory.Services.CreateAsyncScope();
         var context = scope.ServiceProvider.GetRequiredService<AppDbContext>();

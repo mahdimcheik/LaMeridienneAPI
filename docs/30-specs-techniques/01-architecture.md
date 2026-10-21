@@ -30,7 +30,7 @@ Une API, une base. Aucun service tiers, aucune file de messages, aucun cache dis
 LaMeridienneAPI/
   Controllers/      un contrôleur par ressource, mince : validation d'entrée, appel service
   Services/         règles métier, une classe par domaine (SheetService, AppointmentService…)
-  Data/             AppDbContext, configurations EF, migrations, commande --migrate
+  Data/             AppDbContext, configurations EF, migrations appliquées au démarrage
   Models/           entités EF
   Dtos/             contrats d'entrée/sortie, jamais d'entité exposée
   Auth/             émission et rotation des jetons, politique Admin, seed des comptes

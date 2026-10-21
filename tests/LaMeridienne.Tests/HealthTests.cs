@@ -21,7 +21,7 @@ public sealed class HealthTests(PostgresFixture db)
     {
         await using var factory = new ApiFactory("Host=127.0.0.1;Port=1;Database=absente;Username=x;Password=x;Timeout=2")
         {
-            WithSeeder = false,
+            WithDatabase = false,
         };
 
         var response = await factory.CreateClient().GetAsync("/health");

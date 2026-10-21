@@ -24,9 +24,9 @@ public sealed class ShopOptionsValidator : IValidateOptions<ShopOptions>
     public ValidateOptionsResult Validate(string? name, ShopOptions options)
     {
         if (string.IsNullOrWhiteSpace(options.TimeZone))
-            return ValidateOptionsResult.Fail("Shop:TimeZone est obligatoire.");
+            return ValidateOptionsResult.Fail("SHOP_TIMEZONE est obligatoire.");
         return TimeZoneInfo.TryFindSystemTimeZoneById(options.TimeZone, out _)
             ? ValidateOptionsResult.Success
-            : ValidateOptionsResult.Fail($"Shop:TimeZone « {options.TimeZone} » est un fuseau inconnu.");
+            : ValidateOptionsResult.Fail($"SHOP_TIMEZONE « {options.TimeZone} » est un fuseau inconnu.");
     }
 }

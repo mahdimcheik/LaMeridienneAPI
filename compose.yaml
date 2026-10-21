@@ -1,11 +1,11 @@
-# Développement local uniquement : identifiants factices.
+# Développement local uniquement : identifiants factices, lus dans .env (voir .env.example).
 services:
   postgres:
     image: postgres:17
     environment:
-      POSTGRES_DB: lameridienne
-      POSTGRES_USER: lameridienne
-      POSTGRES_PASSWORD: lameridienne
+      POSTGRES_DB: ${POSTGRES_DB:-lameridienne}
+      POSTGRES_USER: ${POSTGRES_USER:-lameridienne}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-lameridienne}
     ports:
       - "${POSTGRES_PORT:-5432}:5432"
     volumes:
