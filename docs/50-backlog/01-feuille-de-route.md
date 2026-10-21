@@ -99,7 +99,8 @@ après suppression.
 
 - [x] Dockerfile de l'API, compose de production (API + PostgreSQL + sauvegarde) derrière
       Nginx Proxy Manager, déjà présent sur le VPS ([exploitation](../30-specs-techniques/05-exploitation.md#production)).
-- [ ] Ajouter le conteneur du client au compose de production (lot 5 du front).
+- [x] Conteneur du client : son propre compose de production, dans le dépôt du client, sur le même
+      réseau `global-network` ([exploitation du client](https://github.com/mahdimcheik/LaMeridienneClient/blob/main/docs/30-specs-techniques/09-exploitation.md)).
 - [x] Commande `--migrate` ; migrations appliquées au déploiement (service `migrate`).
 - [x] Sauvegarde `pg_dump` quotidienne, testée par une restauration (répétition locale :
       `deploy/check-restore.sh` puis `deploy/restore.sh`).
