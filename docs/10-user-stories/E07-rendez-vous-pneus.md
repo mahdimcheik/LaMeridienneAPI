@@ -13,7 +13,7 @@ L'agenda des pneus est indépendant des feuilles du jour. Champs d'un rendez-vou
 
 **Priorité :** Doit · **Dépend de :** US-E01-01
 
-**État :** Absente
+**État :** Implémentée · **Code :** [`AppointmentsController`](../../Controllers/AppointmentsController.cs)
 
 **Critères d'acceptation**
 
@@ -32,7 +32,7 @@ L'agenda des pneus est indépendant des feuilles du jour. Champs d'un rendez-vou
 
 **Priorité :** Doit · **Dépend de :** US-E07-01, US-E03-04
 
-**État :** Absente
+**État :** Implémentée · **Code :** [`AppointmentsController`](../../Controllers/AppointmentsController.cs)
 
 **Critères d'acceptation**
 
@@ -58,7 +58,7 @@ L'agenda des pneus est indépendant des feuilles du jour. Champs d'un rendez-vou
 
 **Priorité :** Doit · **Dépend de :** US-E07-02
 
-**État :** Absente
+**État :** Implémentée · **Code :** [`AppointmentsController`](../../Controllers/AppointmentsController.cs)
 
 **Critères d'acceptation**
 
@@ -77,7 +77,7 @@ L'agenda des pneus est indépendant des feuilles du jour. Champs d'un rendez-vou
 
 **Priorité :** Doit · **Dépend de :** US-E07-02
 
-**État :** Absente
+**État :** Implémentée · **Code :** [`AppointmentsController`](../../Controllers/AppointmentsController.cs)
 
 **Critères d'acceptation**
 
@@ -98,7 +98,7 @@ L'agenda des pneus est indépendant des feuilles du jour. Champs d'un rendez-vou
 
 **Priorité :** Doit · **Dépend de :** US-E07-02
 
-**État :** Absente
+**État :** Implémentée · **Code :** [`AppointmentsController`](../../Controllers/AppointmentsController.cs)
 
 **Critères d'acceptation**
 

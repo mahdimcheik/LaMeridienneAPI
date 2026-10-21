@@ -85,11 +85,11 @@ les feuilles où il a des ventes.
 
 ## Lot 4 — Rendez-vous pneus
 
-- [ ] Entité `TireAppointment` + migration, index sur `Start`.
-- [ ] Fusion de clients ([`CustomerService.MergeAsync`](../../Services/CustomerService.cs)) : déplacer aussi les rendez-vous.
-- [ ] `AppointmentsController` : période (≤ 62 jours), création, modification, suppression.
-- [ ] Contrôles de durée et de pas de 15 minutes ([R-12](../20-specs-fonctionnelles/01-regles-metier.md#r-12--rendez-vous-pneus)).
-- [ ] Détection et renvoi des chevauchements ([R-13](../20-specs-fonctionnelles/01-regles-metier.md#r-13--chevauchement-de-rendez-vous)).
+- [x] Entité `TireAppointment` + migration, index sur `Start`.
+- [x] Fusion de clients ([`CustomerService.MergeAsync`](../../Services/CustomerService.cs)) : déplacer aussi les rendez-vous.
+- [x] `AppointmentsController` : période (≤ 62 jours), création, modification, suppression.
+- [x] Contrôles de durée et de pas de 15 minutes ([R-12](../20-specs-fonctionnelles/01-regles-metier.md#r-12--rendez-vous-pneus)).
+- [x] Détection et renvoi des chevauchements ([R-13](../20-specs-fonctionnelles/01-regles-metier.md#r-13--chevauchement-de-rendez-vous)).
 
 **Stories :** E07.
 **Vérifiable quand :** les tests couvrent création, déplacement, chevauchement signalé, `404`

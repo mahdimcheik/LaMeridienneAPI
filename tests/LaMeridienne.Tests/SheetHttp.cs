@@ -5,7 +5,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace LaMeridienne.Tests;
 
-/// <summary>Appels de la feuille du jour, partagés par les tests des lots 2 et suivants.</summary>
+/// <summary>Appels de la feuille du jour et de l'agenda, partagés par les tests des lots 2 et suivants.</summary>
 public static class SheetHttp
 {
     public static async Task<SheetResponse> SheetAsync(this HttpClient client, string date)
@@ -36,6 +36,16 @@ public static class SheetHttp
         var response = await client.PostAsJsonAsync("/api/newspapers", new { name });
         Assert.Equal(HttpStatusCode.Created, response.StatusCode);
         return (await response.Content.ReadFromJsonAsync<NewspaperResponse>())!;
+    }
+
+    public static Task<HttpResponseMessage> PostAppointmentAsync(this HttpClient client, object body) =>
+        client.PostAsJsonAsync("/api/appointments", body);
+
+    public static async Task<AppointmentSaveResponse> AddAppointmentAsync(this HttpClient client, object body)
+    {
+        var response = await client.PostAppointmentAsync(body);
+        Assert.Equal(HttpStatusCode.Created, response.StatusCode);
+        return (await response.Content.ReadFromJsonAsync<AppointmentSaveResponse>())!;
     }
 
     public static async Task<ValidationProblemDetails> ValidationProblemAsync(this HttpResponseMessage response)

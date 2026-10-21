@@ -15,6 +15,7 @@ public class AppDbContext(DbContextOptions options) : DbContext(options)
     public DbSet<SheetLayout> SheetLayouts => Set<SheetLayout>();
     public DbSet<Newspaper> Newspapers => Set<Newspaper>();
     public DbSet<NewspaperSale> NewspaperSales => Set<NewspaperSale>();
+    public DbSet<TireAppointment> TireAppointments => Set<TireAppointment>();
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {

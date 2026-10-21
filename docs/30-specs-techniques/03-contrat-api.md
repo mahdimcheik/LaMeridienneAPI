@@ -87,7 +87,7 @@ contraire. Erreurs au format `ProblemDetails` (`application/problem+json`), mess
 { "items": [{ "id": "…", "name": "Dupont", "phone": null }], "total": 1 }
 // PUT /api/customers/{id} { "name", "phone" } → 200 ; nom porté par un autre client → 409
 { "title": "Conflit", "status": 409, "detail": "…", "conflictingCustomer": { "id": "…", "name": "Dupont", "phone": null } }
-// POST /api/customers/{A}/merge { "sourceId": "B" } → 200 avec A ; lignes de B (même supprimées) passent à A,
+// POST /api/customers/{A}/merge { "sourceId": "B" } → 200 avec A ; lignes et rendez-vous de B (même supprimés) passent à A,
 // B disparaît de la recherche et répond 404 ; fusion avec soi-même → 400
 ```
 
@@ -97,8 +97,21 @@ contraire. Erreurs au format `ProblemDetails` (`application/problem+json`), mess
 ```
 
 ```jsonc
-// POST /api/appointments → 201, avec les conflits éventuels (R-13)
-{ "appointment": { "id": "…", "start": "…", "end": "…", "customer": { … }, "vehicle": "Clio AB-123-CD" },
+// GET /api/appointments?from=2026-10-19T00:00:00%2B02:00&to=2026-10-26T00:00:00%2B01:00
+//   → rendez-vous qui touchent [from, to), par début ; from/to obligatoires, to > from, ≤ 62 jours, sinon 400
+[{ "id": "…", "start": "2026-10-22T08:00:00Z", "end": "2026-10-22T09:00:00Z",
+   "customer": { "id": "…", "name": "Dupont", "phone": null }, "phone": "06 12 34 56 78",
+   "vehicle": "Clio AB-123-CD", "service": "4 pneus été + équilibrage", "note": null,
+   "createdBy": "Marie", "createdAt": "…", "updatedBy": null, "updatedAt": null }]
+// POST /api/appointments → 201 ; PUT /api/appointments/{id} → 200 (déplacement compris) ; même corps
+//   client par id OU par nom (R-08) ; fin ≤ début, durée hors 15 min–8 h, borne hors pas de 15 min → 400
+//   (errors.start / errors.end) ; rendez-vous passé accepté ; supprimé → 404 ; DELETE → 204, puis 404
+{ "start": "2026-10-22T10:00:00+02:00", "end": "2026-10-22T11:00:00+02:00", "customerId": null,
+  "customerName": "Dupont", "phone": "06 12 34 56 78", "vehicle": "Clio AB-123-CD",
+  "service": "4 pneus été + équilibrage", "note": null }
+// réponse : enregistré même en cas de chevauchement, les autres rendez-vous en conflit sont listés (R-13 ;
+//   des bornes qui se touchent ne se chevauchent pas)
+{ "appointment": { /* forme ci-dessus */ },
   "overlaps": [{ "id": "…", "start": "…", "end": "…", "customerName": "Martin" }] }
 ```
 

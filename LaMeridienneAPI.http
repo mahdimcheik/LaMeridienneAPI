@@ -100,3 +100,17 @@ GET {{LaMeridienneAPI_HostAddress}}/api/customers/list?page=1&pageSize=50
 Authorization: Bearer {{login.response.body.accessToken}}
 
 ###
+
+GET {{LaMeridienneAPI_HostAddress}}/api/appointments?from=2026-10-19T00:00:00%2B02:00&to=2026-10-26T00:00:00%2B01:00
+Authorization: Bearer {{login.response.body.accessToken}}
+
+###
+
+POST {{LaMeridienneAPI_HostAddress}}/api/appointments
+Authorization: Bearer {{login.response.body.accessToken}}
+Content-Type: application/json
+
+{ "start": "2026-10-22T10:00:00+02:00", "end": "2026-10-22T11:00:00+02:00", "customerName": "Dupont",
+  "vehicle": "Clio AB-123-CD", "service": "4 pneus été + équilibrage" }
+
+###

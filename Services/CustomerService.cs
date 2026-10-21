@@ -140,8 +140,8 @@ public sealed class CustomerService(AppDbContext db)
     }
 
     /// <summary>
-    /// Fusionne <paramref name="sourceId"/> dans <paramref name="targetId"/> : toutes les lignes, même
-    /// supprimées, passent à la cible ; la source n'est plus proposée (US-E08-02).
+    /// Fusionne <paramref name="sourceId"/> dans <paramref name="targetId"/> : toutes les lignes et tous
+    /// les rendez-vous, même supprimés, passent à la cible ; la source n'est plus proposée (US-E08-02).
     /// </summary>
     public async Task<CustomerResponse> MergeAsync(Guid targetId, Guid sourceId, CancellationToken ct)
     {
@@ -161,6 +161,8 @@ public sealed class CustomerService(AppDbContext db)
             .ExecuteUpdateAsync(u => u.SetProperty(e => e.CustomerId, targetId), ct);
         await db.RefundEntries.IgnoreQueryFilters().Where(e => e.CustomerId == sourceId)
             .ExecuteUpdateAsync(u => u.SetProperty(e => e.CustomerId, targetId), ct);
+        await db.TireAppointments.IgnoreQueryFilters().Where(a => a.CustomerId == sourceId)
+            .ExecuteUpdateAsync(u => u.SetProperty(a => a.CustomerId, targetId), ct);
 
         target.Phone ??= source.Phone;
         source.MergedIntoId = targetId;

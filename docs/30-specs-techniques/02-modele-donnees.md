@@ -31,7 +31,7 @@ sont posées par un intercepteur EF à partir de l'utilisateur courant
 | `RefundEntry` | mêmes champs que `CreditEntry` | idem |
 | `Newspaper` | `Id`, `Name`, `NormalizedName`, `IsActive`, `SortOrder` | `NormalizedName` unique (sans casse ni accents) ; jamais supprimé |
 | `NewspaperSale` | `SheetId`, `NewspaperId`, `Quantity` + audit | clé `(SheetId, NewspaperId)` ; `0 ≤ Quantity ≤ 999` ; écrite par un `INSERT … ON CONFLICT` atomique qui pose lui-même l'audit ([`NewspaperService`](../../Services/NewspaperService.cs)) |
-| `TireAppointment` | `Id`, `Start`, `End`, `CustomerId`, `Phone`, `Vehicle`, `Service`, `Note`, `DeletedAt` + audit | `End > Start` ; index sur `Start` |
+| `TireAppointment` | `Id`, `Start`, `End`, `CustomerId`, `Phone`, `Vehicle`, `Service`, `Note`, `DeletedAt` + audit | `End > Start` (contrainte `CK_TireAppointments_End`) ; instants stockés en UTC ; index sur `Start` ; durée 15 min–8 h et pas de 15 min contrôlés par [`AppointmentService`](../../Services/AppointmentService.cs) ([R-12](../20-specs-fonctionnelles/01-regles-metier.md#r-12--rendez-vous-pneus)) |
 
 Crédits et remboursements sont deux tables distinctes plutôt qu'une table typée : ils sont
 indépendants ([R-04](../20-specs-fonctionnelles/01-regles-metier.md#r-04--crédits-et-remboursements-sont-indépendants))
